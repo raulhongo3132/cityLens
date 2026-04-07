@@ -1,0 +1,12 @@
+# Python
+__pycache__/
+*.pyc
+venv/
+.env
+
+# Postgres
+*.sql 
+dumps/
+
+# OS
+.DS_Store
