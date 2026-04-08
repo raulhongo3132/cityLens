@@ -19,6 +19,10 @@ Este proyecto utiliza un flujo basado en ramas:
 
 Ningún cambio debe hacerse directamente sobre `main`. Todo desarrollo ocurre en `dev` (o ramas derivadas), y posteriormente se integra mediante un Pull Request (PR).
 
+Ojo: las ramas derivdas pueden ser: 
+
+`feature/nombre-de-la-tarea  →  dev  →  main`
+
 Para subir cambios:
 
 1. Trabajar en la rama `dev`
