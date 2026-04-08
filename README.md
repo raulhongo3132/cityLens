@@ -68,17 +68,25 @@ mi_proyecto/
 
 ---
 
-# 2. Base de datos
+# 2. Descargar el repositorio
+
+Debes tener configurado tu git con tu github (comando por autenticación con SSH). Para clonar el repositorio, ejecuta el siguiente comando
+
+```bash
+    git clone git@github.com:raulhongo3132/cityLens.git
+    cd citiLens
+```
+
+
+---
+
+# 3. Bade de datos y variables de entorno
 
 Debes tener una instancia de PostgreSQL corriendo localmente.
 
 Crea una base de datos (por ejemplo `citylens`) y un usuario con permisos.
 
 Luego usa esos datos en tu archivo `.env`.
-
----
-
-# 3. Variables de entorno
 
 1. Copia el archivo de ejemplo:
 
