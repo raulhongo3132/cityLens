@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block title %}CityLens – Busca tu ciudad{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center mt-5">
+    <div class="col-md-6 text-center">
+        <h1 class="mb-4">¿A dónde vamos?</h1>
+        <form action="/city" method="GET">
+            <div class="input-group">
+                <input type="text" name="name" class="form-control form-control-lg"
+                       placeholder="Escribe una ciudad..." required>
+                <button class="btn btn-primary btn-lg" type="submit">Explorar</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
