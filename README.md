@@ -173,13 +173,13 @@ Nadie hace merge a `main` directamente. `main` solo se actualiza desde `dev` cua
 
 ## Verificación de base de datos
 
-Para confirmar que tu base de datos está bien configurada:
+Una vez que el DBA configure los modelos, se podrá verificar la conexión con:
 
 ```bash
-python -m backend.db_check
+python -m app.db_check
 ```
 
-Imprime las tablas existentes o un mensaje de error si hay problema de conexión.
+Este script se creará como parte de la issue `[DB] Crear script de verificación de base de datos`.
 
 ---
 
