@@ -274,3 +274,15 @@ Para CORS, estos son distintos:
 
 ---
 
+## 🛠️ Verificación de Base de Datos
+
+Para asegurar que tu entorno local de PostgreSQL está correctamente configurado y que las tablas se crearon con éxito, ejecuta el siguiente script:
+
+python -m backend.db_check
+
+## Resultados esperados:
+Estado [OK]: La conexión es correcta.
+
+Tablas encontradas: Debe listar al menos cities y places.
+
+Estado [ERROR]: Revisa que tu PostgreSQL esté activo y que las credenciales en el archivo .env coincidan con tu configuración local.
