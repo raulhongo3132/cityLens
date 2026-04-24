@@ -6,11 +6,25 @@ class City(db.Model):
     __tablename__ = "cities"
 
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(100), nullable=False)
-    country = db.Column(db.String(100), nullable=False)
+
+    name = db.Column(
+        db.String(100),
+        nullable=False
+    )
+
+    country = db.Column(
+        db.String(100),
+        nullable=False
+    )
+
     population = db.Column(db.Integer)
+
     timezone = db.Column(db.String(50))
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    created_at = db.Column(
+        db.DateTime,
+        default=datetime.utcnow
+    )
 
     places = db.relationship(
         "Place",
@@ -22,7 +36,10 @@ class City(db.Model):
 class Place(db.Model):
     __tablename__ = "places"
 
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(
+        db.Integer,
+        primary_key=True
+    )
 
     city_id = db.Column(
         db.Integer,
@@ -30,7 +47,10 @@ class Place(db.Model):
         nullable=False
     )
 
-    name = db.Column(db.String(200), nullable=False)
+    name = db.Column(
+        db.String(200),
+        nullable=False
+    )
 
     category = db.Column(db.String(100))
 

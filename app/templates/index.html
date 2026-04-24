@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+
+{% block title %}Datamundi - Inicio{% endblock %}
+
+{% block body %}
+    <header class="w-full py-12 px-6 lg:px-12 relative flex justify-center items-center">
+        <div class="flex flex-col items-center">
+            <div class="flex items-center gap-4 group">
+                <div class="w-6 h-6 md:w-8 md:h-8 bg-brand rotate-45 group-hover:rotate-[225deg] transition-transform duration-1000 shadow-sm"></div>
+                <h1 class="text-9xl md:text-10xl font-black tracking-tighter uppercase leading-none force-black m-0">Datamundi</h1>
+            </div>
+        </div>
+        <button id="theme-toggle-btn" onclick="toggleDarkMode()"
+            class="position-absolute end-0 me-4 me-lg-5 hidden sm:flex items-center gap-2 px-5 py-3 rounded-pill shadow-sm text-[13px] font-black tracking-[0.2em] uppercase transition-all hover:shadow-md active:scale-95">
+        </button>
+    </header>
+
+    <main class="container max-w-[1400px] mx-auto px-4 px-lg-5 pt-5 pb-5">
+
+        <nav class="flex flex-wrap justify-center gap-3 md:gap-4 mb-5 w-100 border-b border-brand pb-4">
+            <button onclick="switchTab('explorar')" id="tab-explorar"
+                class="cat-btn px-6 md:px-8 py-3 text-[14px] md:text-[18px] active">Búsqueda</button>
+            <button onclick="switchTab('favoritos')" id="tab-favoritos"
+                class="cat-btn px-6 md:px-8 py-3 text-[14px] md:text-[18px]">Favoritos</button>
+            <button onclick="switchTab('nosotros')" id="tab-nosotros"
+                class="cat-btn px-6 md:px-8 py-3 text-[14px] md:text-[18px]">Nosotros</button>
+        </nav>
+
+        <section id="section-explorar" class="max-w-4xl mx-auto animate-fade-in">
+            <div class="card-lugar p-10 md:p-14 rounded-sm shadow-xl relative border-t-[6px] border-brand">
+                <h2 class="text-3xl md:text-4xl mb-10 font-serif card-texto">Destino global...</h2>
+                <div class="row g-3">
+                    <div class="col-12 col-md-8 col-lg-9">
+                        <div class="search-container h-full relative p-2 md:p-3 rounded-sm flex items-center border border-brand/30 dark:border-brand">
+                            <input type="text" id="search-input"
+                                onkeypress="if(event.key==='Enter')buscarCiudad()"
+                                placeholder="Ej: Paris, Tokyo, Mexico"
+                                class="search-input-field font-sans-ui w-full border-none outline-none text-xl md:text-2xl font-light py-2 px-4 bg-transparent focus:ring-0">
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-4 col-lg-3">
+                        <button id="search-btn" onclick="buscarCiudad()"
+                            class="w-full h-full bg-brand text-white px-4 py-4 md:py-3 font-black text-[12px] tracking-widest uppercase hover:bg-brand/80 transition-all shadow-md flex items-center justify-center gap-2 border-0 rounded-sm">
+                            <i data-lucide="search" class="w-4 h-4"></i> ¡Descubre!
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div id="search-result-container"></div>
+        </section>
+
+        <section id="section-favoritos" class="d-none max-w-4xl mx-auto animate-fade-in">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-5 gap-4">
+                <h3 class="text-6xl md:text-8xl font-serif leading-none m-0 force-black">Favoritos</h3>
+                <span id="fav-counter"
+                    class="bg-brand text-white px-6 py-2 rounded-full text-[11px] font-black tracking-widest uppercase shadow-lg">0
+                    FAVORITOS</span>
+            </div>
+            <div id="fav-list"></div>
+        </section>
+
+        <section id="section-nosotros" class="d-none max-w-4xl mx-auto animate-fade-in">
+            <h3 class="text-6xl md:text-8xl font-serif leading-none mb-4 force-black">Nosotros</h3>
+            <p class="text-2xl md:text-4xl font-sans-ui leading-relaxed card-texto">
+                <strong class="font-black tracking-wider text-brand">DATAMUNDI:</strong><br>
+                Transformamos la forma de descubrir el mundo. No solo te mostramos datos de cada país, sino que te
+                ayudamos a vivirlos: explora información relevante, guarda tus destinos favoritos y encuentra lugares
+                según el tipo de experiencia que buscas, desde planes familiares hasta opciones nocturnas. Todo
+                integrado en un entorno interactivo con mapas dinámicos.
+            </p>
+        </section>
+
+    </main>
+{% endblock %}
+
+{% block scripts %}
+    <script src="{{ url_for('static', filename='js/inicio.js') }}"></script>
+{% endblock %}

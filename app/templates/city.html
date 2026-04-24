@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+
+{% block title %}{{ city_name }} – CityLens{% endblock %}
+
+{% block body %}
+    <header class="w-full py-12 px-6 lg:px-12 relative flex justify-center items-center">
+        <a href="/"
+            class="position-absolute start-0 ms-4 ms-lg-5 text-xl font-black uppercase force-black hover:text-brand text-decoration-none transition-colors">
+            Volver
+        </a>
+
+        <div class="flex flex-col items-center mt-5 mt-md-0">
+            <div class="flex items-center gap-4 group">
+                <div class="w-6 h-6 md:w-8 md:h-8 bg-brand rotate-45 transition-transform duration-1000 shadow-sm group-hover:rotate-[225deg]"></div>
+                <h1 class="text-8xl md:text-10xl font-black tracking-tighter uppercase leading-none force-black m-0">City Lens</h1>
+            </div>
+        </div>
+
+        <button id="theme-toggle-btn" onclick="toggleDarkMode()"
+            class="position-absolute end-0 me-4 me-lg-5 hidden sm:flex items-center gap-2 px-5 py-3 rounded-pill shadow-sm text-xs font-black uppercase transition-all active:scale-95 border-0">
+        </button>
+    </header>
+
+    <main class="container-xxl mx-auto px-4 px-lg-5 pt-5 pb-5">
+
+        <div class="flex flex-col items-center text-center mb-5 pb-4">
+            <p class="text-lg font-black text-brand uppercase tracking-[0.4em] mb-4 m-0">Destino Seleccionado</p>
+            {# Jinja2 inyecta el nombre directamente — el JS lo toma del elemento, no del query param #}
+            <h2 id="city-title"
+                class="text-5xl md:text-6xl font-serif leading-none force-black capitalize transition-colors m-0">
+                {{ city_name }}
+            </h2>
+        </div>
+
+        <nav class="flex flex-wrap justify-center gap-3 md:gap-4 mb-5 w-100 border-b border-brand pb-4">
+            <button onclick="switchCategory('familiar')" id="btn-familiar"
+                class="cat-btn px-8 md:px-10 py-3 text-lg">Familiar</button>
+            <button onclick="switchCategory('gastronomico')" id="btn-gastronomico"
+                class="cat-btn px-8 md:px-10 py-3 text-lg">Gastronómico</button>
+            <button onclick="switchCategory('nocturna')" id="btn-nocturna"
+                class="cat-btn px-8 md:px-10 py-3 text-lg">Nocturna</button>
+            <button onclick="switchCategory('alternativo')" id="btn-alternativo"
+                class="cat-btn px-8 md:px-10 py-3 text-lg">Alternativo</button>
+        </nav>
+
+        <div class="row gx-lg-5 items-stretch">
+
+            <div class="col-12 col-lg-5 flex flex-col h-[600px]">
+                <div id="places-list" class="flex-grow-1 overflow-y-auto pe-4 pt-4 places-scroll">
+                </div>
+            </div>
+
+            <div class="col-12 col-lg-7 mt-5 mt-lg-0">
+                <div class="w-100 h-100 min-h-[400px] bg-gray-100 dark:bg-[#141414] relative flex flex-col items-center justify-center border-t-[6px] border-brand shadow-lg rounded-sm overflow-hidden transition-colors">
+
+                    <div id="map-placeholder"
+                        class="text-center absolute flex flex-col items-center transition-opacity duration-500">
+                        <i data-lucide="map" class="w-16 h-16 mb-4 opacity-20 force-black"></i>
+                        <p class="text-[10px] font-black tracking-widest uppercase opacity-60 force-black">Mapa Interactivo</p>
+                    </div>
+
+                    <div id="map" class="absolute inset-0 z-10 opacity-0 transition-opacity duration-700">
+                        <iframe
+                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d83998.96!2d2.26!3d48.85!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47e66e1f06e2b70f%3A0x40b82c3688c9460!2zUGFyw61z!5e0!3m2!1ses!2smx!4v1"
+                            class="w-full h-full border-0"
+                            allowfullscreen=""
+                            loading="lazy"
+                            referrerpolicy="no-referrer-when-downgrade">
+                        </iframe>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </main>
+{% endblock %}
+
+{% block scripts %}
+    {# Exponemos city_name como variable JS para que city.js la use directamente #}
+    <script>
+        const CITY_NAME = {{ city_name | tojson }};
+    </script>
+    <script src="{{ url_for('static', filename='js/city.js') }}"></script>
+{% endblock %}
