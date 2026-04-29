@@ -16,7 +16,7 @@ def _place_to_dict(place):
         "nombre": place.name,
         "rating": place.rating,
         "direccion": place.address,
-        "horarios": place.hours,
+        "horarios": place.opening_hours,  # corregido
     }
 
 
@@ -28,6 +28,7 @@ def _extract_hours(place_result):
         if opening_hours.get("open_now") is not None:
             return "Abierto ahora" if opening_hours.get("open_now") else "Cerrado ahora"
     return "Horario no disponible"
+
 
 def get_places(city_name, category):
     """
@@ -48,6 +49,7 @@ def get_places(city_name, category):
         api_key = os.getenv('GOOGLE_PLACES_KEY')
         url = "https://maps.googleapis.com/maps/api/place/textsearch/json"
         query = CATEGORY_MAP.get(category, category)
+
         params = {
             'query': f"{query} in {city_name}",
             'key': api_key
@@ -57,21 +59,27 @@ def get_places(city_name, category):
         response.raise_for_status()
         data = response.json()
 
+        # AQUÍ está el cambio importante
         if not city:
-            city = City(name=city_name)
+            city = City(
+                name=city_name,
+                country="Unknown"  # requerido por nullable=False
+            )
             db.session.add(city)
             db.session.flush()
 
         places_to_return = []
+
         for item in data.get("results", [])[:10]:
             place = Place(
                 name=item.get("name"),
                 rating=item.get("rating"),
                 address=item.get("formatted_address"),
-                hours=_extract_hours(item),
+                opening_hours=_extract_hours(item),  # corregido
                 category=category,
                 city_id=city.id,
             )
+
             db.session.add(place)
             places_to_return.append(_place_to_dict(place))
 
@@ -80,7 +88,11 @@ def get_places(city_name, category):
 
     except requests.RequestException as e:
         db.session.rollback()
-        return {"error": "La API de Google Places no responde.", "detalle": str(e)}, 503
+        return {
+            "error": "La API de Google Places no responde.",
+            "detalle": str(e)
+        }, 503
+
     except Exception:
         db.session.rollback()
         raise
