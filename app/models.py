@@ -2,14 +2,17 @@ from . import db
 from datetime import datetime
 from sqlalchemy.dialects.postgresql import JSON
 
+
 class City(db.Model):
     __tablename__ = "cities"
 
     id = db.Column(db.Integer, primary_key=True)
 
+    # Nombre de la ciudad (usado en búsquedas)
     name = db.Column(
         db.String(100),
-        nullable=False
+        nullable=False,
+        index=True
     )
 
     country = db.Column(
@@ -23,14 +26,20 @@ class City(db.Model):
 
     created_at = db.Column(
         db.DateTime,
-        default=datetime.utcnow
+        default=datetime.utcnow,
+        nullable=False
     )
 
+    # Relación: una ciudad tiene muchos lugares
     places = db.relationship(
         "Place",
         backref="city",
-        lazy=True
+        lazy=True,
+        cascade="all, delete-orphan"
     )
+
+    def __repr__(self):
+        return f"<City {self.name}, {self.country}>"
 
 
 class Place(db.Model):
@@ -41,33 +50,48 @@ class Place(db.Model):
         primary_key=True
     )
 
+    # Foreign Key hacia City
     city_id = db.Column(
         db.Integer,
         db.ForeignKey("cities.id"),
-        nullable=False
+        nullable=False,
+        index=True
     )
 
     name = db.Column(
         db.String(200),
-        nullable=False
+        nullable=False,
+        index=True
     )
 
-    category = db.Column(db.String(100))
+    # Categoría usada por los endpoints
+    category = db.Column(
+        db.String(100),
+        index=True
+    )
 
     rating = db.Column(db.Float)
 
     address = db.Column(db.String(500))
 
+    # ID único de Google Places
     google_place_id = db.Column(
         db.String(255),
-        unique=True
+        unique=True,
+        nullable=False,
+        index=True
     )
 
     price_level = db.Column(db.Integer)
 
+    # Horarios almacenados en formato JSON (PostgreSQL)
     opening_hours = db.Column(JSON)
 
     cached_at = db.Column(
         db.DateTime,
-        default=datetime.utcnow
+        default=datetime.utcnow,
+        nullable=False
     )
+
+    def __repr__(self):
+        return f"<Place {self.name} ({self.category})>"
