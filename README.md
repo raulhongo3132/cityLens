@@ -6,13 +6,13 @@ Aplicación web para explorar ciudades del mundo. Muestra información relevante
 
 ## Stack tecnológico
 
-| Capa | Tecnología |
-|---|---|
-| Backend | Python + Flask |
-| Templates | Jinja2 (incluido en Flask) |
-| Base de datos | PostgreSQL + Flask-SQLAlchemy |
-| Frontend | HTML + CSS + Bootstrap 5 + Tailwind CDN |
-| APIs externas | Google Places API, REST Countries |
+| Capa          | Tecnología                                 |
+| ------------- | ------------------------------------------ |
+| Backend       | Python + Flask                             |
+| Templates     | Jinja2 (incluido en Flask)                 |
+| Base de datos | PostgreSQL + Flask-SQLAlchemy              |
+| Frontend      | HTML + CSS + Bootstrap 5 + Tailwind CDN    |
+| APIs externas | OpenStreetMap Overpass API, REST Countries |
 
 ---
 
@@ -45,8 +45,7 @@ citylens/
 │           └── city.js
 ├── .env                     ← Variables de entorno (NO subir al repo)
 ├── .env.example             ← Plantilla de variables de entorno
-├── .gitignore
-├── config.py                ← Configuración de Flask desde .env
+├── migrations/              ← Migraciones de base de datos (Flask-Migrate)
 ├── requirements.txt
 └── run.py                   ← Punto de entrada
 ```
@@ -104,7 +103,13 @@ Editar `.env` con tus datos:
 FLASK_ENV=development
 SECRET_KEY=cambia_esto
 DATABASE_URL=postgresql://usuario:password@localhost:5432/citylens
-GOOGLE_PLACES_KEY=tu_api_key
+```
+
+### 5. Inicializar la base de datos
+
+```bash
+# Crear las tablas usando migraciones
+flask db upgrade
 ```
 
 ---
@@ -127,12 +132,12 @@ Flask sirve tanto el frontend (HTML) como la API desde el mismo servidor. No se 
 
 ## Endpoints disponibles
 
-| Método | Ruta | Descripción |
-|---|---|---|
-| GET | `/` | Página de búsqueda |
-| GET | `/city?name=Tokyo` | Página de detalle de ciudad |
-| GET | `/api/city?name=Tokyo` | Datos JSON de la ciudad |
-| GET | `/api/places?city=Tokyo&category=familiar` | JSON con hasta 10 lugares |
+| Método | Ruta                                       | Descripción                 |
+| ------ | ------------------------------------------ | --------------------------- |
+| GET    | `/`                                        | Página de búsqueda          |
+| GET    | `/city?name=Tokyo`                         | Página de detalle de ciudad |
+| GET    | `/api/city?name=Tokyo`                     | Datos JSON de la ciudad     |
+| GET    | `/api/places?city=Tokyo&category=familiar` | JSON con hasta 10 lugares   |
 
 Las categorías válidas para `/api/places` son: `familiar`, `gastronomico`, `nocturna`, `alternativo`.
 
@@ -171,39 +176,30 @@ Nadie hace merge a `main` directamente. `main` solo se actualiza desde `dev` cua
 
 ---
 
-## Verificación de base de datos
-
-Una vez que el DBA configure los modelos, se podrá verificar la conexión con:
-
-```bash
-python -m app.db_check
-```
-
-Este script se creará como parte de la issue `[DB] Crear script de verificación de base de datos`.
-
----
-
 ## Problemas comunes
 
 ### `ModuleNotFoundError`
+
 Asegúrate de tener el entorno virtual activado antes de correr cualquier comando.
 
 ### Error de conexión a PostgreSQL
+
 Verifica que el servicio de PostgreSQL esté corriendo y que las credenciales en `.env` sean correctas. El usuario debe tener permisos sobre la base de datos especificada.
 
 ### La página carga pero los datos no aparecen
-Los endpoints `/api/city` y `/api/places` están en construcción. El frontend muestra datos de prueba (mocks) mientras tanto — esto es comportamiento esperado.
+
+Verifica que las APIs externas (Rest Countries y OpenStreetMap) estén disponibles. Si hay errores de red, se mostrarán en la consola del navegador.
 
 ---
 
 ## Estado actual
 
-| Componente | Estado |
-|---|---|
-| Estructura base del proyecto | ✅ Listo |
-| Templates Jinja2 (index, city) | ✅ Listo |
-| Estilos y JS del frontend | ✅ Listo |
-| Modelos de base de datos | 🔧 En progreso |
-| Endpoint `/api/city` | 🔧 En progreso |
-| Endpoint `/api/places` | 🔧 En progreso |
-| Integración Google Places API | 🔧 En progreso |
+| Componente                     | Estado         |
+| ------------------------------ | -------------- |
+| Estructura base del proyecto   | ✅ Listo       |
+| Templates Jinja2 (index, city) | ✅ Listo       |
+| Estilos y JS del frontend      | ✅ Listo       |
+| Modelos de base de datos       | 🔧 En progreso |
+| Endpoint `/api/city`           | 🔧 En progreso |
+| Endpoint `/api/places`         | 🔧 En progreso |
+| Integración Google Places API  | 🔧 En progreso |

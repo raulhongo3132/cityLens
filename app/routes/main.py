@@ -1,16 +1,18 @@
-from flask import Blueprint, render_template, request, redirect, url_for
+from flask import Blueprint, redirect, render_template, request, url_for
 
-main = Blueprint('main', __name__)
+from app.constants import ALL_CATEGORIES
+
+main = Blueprint("main", __name__)
 
 
-@main.route('/')
+@main.route("/")
 def index():
-    return render_template('index.html')
+    return render_template("index.html")
 
 
-@main.route('/city')
+@main.route("/city")
 def city():
-    name = request.args.get('name', '').strip()
+    name = request.args.get("name", "").strip()
     if not name:
-        return redirect(url_for('main.index'))
-    return render_template('city.html', city_name=name)
+        return redirect(url_for("main.index"))
+    return render_template("city.html", city_name=name, categories=ALL_CATEGORIES)

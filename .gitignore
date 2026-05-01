@@ -4,3 +4,7 @@ venv/
 .env
 .DS_Store
 *.sqlite3
+FEATURES.md
+project_analysis.md
+tree.txt
+.editorconfig

@@ -1,19 +1,19 @@
-from flask import Blueprint, request, jsonify, render_template
+##############################################################################################################################
+# ENDPOINTS:
+
+##############################################################################################################################
+from flask import Blueprint, jsonify, request
+
 from app.services.city_service import get_city_data
 
 # Se define el blueprint
-cities = Blueprint('cities', __name__)
+cities = Blueprint("cities", __name__)
 
-# 1. Ruta para la interfaz web (Renderiza el HTML)
-@cities.route('/city', methods=['GET'])
-def city_page():
-    name = request.args.get('name', '')
-    return render_template('city.html', city_name=name)
 
 # 2. Ruta para la API (Devuelve el JSON y maneja la lógica)
-@cities.route('/api/city', methods=['GET'])
+@cities.route("/api/city", methods=["GET"])
 def city_endpoint():
-    name = request.args.get('name')
+    name = request.args.get("name")
 
     if not name:
         return jsonify({"error": "El parámetro 'name' es requerido"}), 400
