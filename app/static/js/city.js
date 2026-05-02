@@ -1,7 +1,9 @@
 const API_URL = `${window.location.origin}/api`;
 
+// 🛡️ EL SEMÁFORO: Variable de estado para controlar la concurrencia
+let isFetching = false;
+
 // CITY_NAME viene inyectado por Jinja2 en city.html
-// Si por algún motivo no existe, cae al query param como respaldo
 let currentCity =
   typeof CITY_NAME !== "undefined" && CITY_NAME
     ? CITY_NAME
@@ -18,8 +20,11 @@ document.addEventListener("DOMContentLoaded", () => {
   if (isDarkMode) document.documentElement.classList.add("dark");
   actualizarBotonModo(isDarkMode);
 
-  // Categoría por defecto alineada a la macro-escala nacional
-  switchCategory("turismo");
+  // 1. Arquitectura Resiliente: Inicializamos el mapa independientemente de los lugares
+  inicializarMapaNacional(currentCity);
+
+  // 2. 🚀 Carga Inicial Óptima: Servimos el "Menú Degustación" por defecto
+  switchCategory("destacados");
 });
 
 function toggleDarkMode() {
@@ -42,9 +47,35 @@ function actualizarBotonModo(isDark) {
   }
 }
 
+// Separa el mapa para que no dependa de si "El Mesero" encuentra lugares o no
+function inicializarMapaNacional(cityName) {
+  const map = document.getElementById("map");
+  const placeholder = document.getElementById("map-placeholder");
+
+  if (map) {
+    map.classList.replace("opacity-0", "opacity-100");
+    const iframe = map.querySelector("iframe");
+    if (iframe) {
+      iframe.src = `https://maps.google.com/maps?q=${encodeURIComponent(cityName + " country")}&t=&z=5&ie=UTF8&iwloc=&output=embed`;
+    }
+  }
+
+  if (placeholder) placeholder.classList.add("opacity-0");
+}
+
 function switchCategory(cat) {
-  // ALL_CATEGORIES se inyecta desde el Backend vía Jinja2
-  const categories = ALL_CATEGORIES;
+  // 🛡️ CONTROL DE CONCURRENCIA: Si "El Mesero" ya está ocupado, ignoramos el clic
+  if (isFetching) {
+    console.warn("Búsqueda en progreso. Por favor, espera a que termine.");
+    // Si tienes showToast disponible globalmente, puedes descomentar la siguiente línea:
+    // if (typeof showToast === "function") showToast("Por favor, espera a que termine la búsqueda actual", "info");
+    return;
+  }
+
+  const categories =
+    typeof ALL_CATEGORIES !== "undefined"
+      ? ALL_CATEGORIES
+      : ["destacados", "turismo", "naturaleza", "cultura", "historico"];
 
   categories.forEach((c) => {
     const btn = document.getElementById(`btn-${c}`);
@@ -58,6 +89,8 @@ function switchCategory(cat) {
   });
 
   const list = document.getElementById("places-list");
+
+  // Mostramos el spinner de carga
   list.innerHTML = `
         <div class="text-center py-10 opacity-50 flex flex-col items-center">
             <i data-lucide="loader-2" class="w-8 h-8 animate-spin text-brand mb-3"></i>
@@ -69,38 +102,44 @@ function switchCategory(cat) {
 }
 
 async function fetchPlaces(city, category) {
+  const list = document.getElementById("places-list");
+
+  // 🛡️ Cerramos el candado: Iniciamos la petición
+  isFetching = true;
+
   try {
     const res = await fetch(
       `${API_URL}/places?city=${encodeURIComponent(city)}&category=${encodeURIComponent(category)}`,
     );
+
     const data = await res.json();
 
-    if (!res.ok) throw new Error(data.error || "Error al obtener lugares");
+    // Manejo Pacífico: "El Mesero" trajo un error controlado (ej. 404 de lugares vacíos)
+    if (!res.ok) {
+      throw new Error(
+        data.error || "No hay resultados disponibles en esta categoría.",
+      );
+    }
 
-    renderPlaces(data || [], city);
+    renderPlaces(data || []);
   } catch (error) {
-    console.error("Error conectando con El Mesero:", error);
-    const list = document.getElementById("places-list");
-    list.innerHTML = `<p class="text-center force-black text-red-500 py-10 text-xs tracking-widest uppercase"><i data-lucide="alert-triangle" class="w-6 h-6 mx-auto mb-2"></i> ${error.message}</p>`;
+    console.warn("Aviso del sistema:", error.message);
+
+    // Destruimos el spinner y mostramos la excusa elegantemente
+    list.innerHTML = `
+        <div class="text-center p-6 border border-[#27dae0]/30 rounded-sm bg-gray-50 dark:bg-gray-800/50">
+            <i data-lucide="alert-circle" class="w-8 h-8 mx-auto mb-3 text-gray-400"></i>
+            <p class="force-black text-sm tracking-widest uppercase opacity-70 m-0">${error.message}</p>
+        </div>`;
     if (window.lucide) lucide.createIcons();
+  } finally {
+    // 🛡️ Abrimos el candado: Finaliza la ejecución sin importar si hubo éxito o error
+    isFetching = false;
   }
 }
 
-function renderPlaces(places, cityName) {
+function renderPlaces(places) {
   const list = document.getElementById("places-list");
-  const map = document.getElementById("map");
-  const placeholder = document.getElementById("map-placeholder");
-
-  if (map) {
-    map.classList.replace("opacity-0", "opacity-100");
-    const iframe = map.querySelector("iframe");
-    if (iframe) {
-      // Vista Nacional por defecto con "country" para prevenir ambigüedades en Google Maps (Z=5)
-      iframe.src = `https://maps.google.com/maps?q=${encodeURIComponent(cityName + " country")}&t=&z=5&ie=UTF8&iwloc=&output=embed`;
-    }
-  }
-
-  if (placeholder) placeholder.classList.add("opacity-0");
 
   if (!Array.isArray(places) || places.length === 0) {
     list.innerHTML = `<p class="text-center force-black opacity-30 py-10 text-xs tracking-widest uppercase">Sin resultados disponibles en la base de datos</p>`;
@@ -113,7 +152,6 @@ function renderPlaces(places, cityName) {
               .map((p, i) => {
                 const safeName = encodeURIComponent(p.name || "Lugar");
 
-                // Renderizado Condicional: Solo muestra los íconos si La Despensa tiene la información
                 const phoneHtml = p.phone
                   ? `<p class="m-0 flex items-center gap-2"><i data-lucide="phone" class="w-4 h-4 force-black"></i> <span class="force-black">${p.phone}</span></p>`
                   : "";
@@ -127,7 +165,7 @@ function renderPlaces(places, cityName) {
                 return `
                 <div class="card-lista-lugar p-4 animate-fade-in cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors" 
                      style="animation-delay: ${i * 0.05}s"
-                     onclick="actualizarMapa(${p.lat || null}, ${p.lon || null}, '${safeName}')">
+                     onclick="actualizarMapa(${p.lat || null}, ${p.lon || null})">
                     
                     <div class="flex items-center justify-between mb-3 gap-3">
                         <h4 class="m-0 font-serif text-2xl fw-bold force-black truncate">${p.name || "Sin nombre"}</h4>
@@ -155,16 +193,12 @@ function renderPlaces(places, cityName) {
   if (window.lucide) lucide.createIcons();
 }
 
-// NUEVA FUNCIÓN: Mover el iframe hacia las coordenadas exactas permitiendo interacción directa
-window.actualizarMapa = function (lat, lon, placeName) {
+// Permite interacción directa abriendo en la misma vista las coordenadas
+window.actualizarMapa = function (lat, lon) {
   const mapDiv = document.getElementById("map");
   const iframe = mapDiv ? mapDiv.querySelector("iframe") : null;
 
   if (iframe && lat && lon) {
-    // Usamos las coordenadas puras. Esto permite que el botón nativo de Google Maps
-    // funcione correctamente y abra la ubicación real en otra pestaña.
     iframe.src = `https://maps.google.com/maps?q=${lat},${lon}&t=&z=17&ie=UTF8&iwloc=&output=embed`;
-  } else {
-    console.warn("⚠️ Este lugar carece de coordenadas en la base de datos.");
   }
 };

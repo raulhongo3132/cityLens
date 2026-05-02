@@ -108,26 +108,14 @@ async function buscarCiudad() {
   } catch (err) {
     await new Promise((resolve) => setTimeout(resolve, 800));
 
-    if (query.toLowerCase() === "xyzxyz") {
-      container.innerHTML = `
-                <div class="mt-8 p-10 card-lugar shadow-xl rounded-sm text-center animate-fade-in border-t-[6px]" style="border-top-color: #ef4444 !important; border-color: #ef4444;">
-                    <i data-lucide="map-x" class="w-12 h-12 mx-auto mb-4 text-[#ef4444]"></i>
-                    <h3 class="text-3xl font-serif text-[#ef4444] mb-2">Destino no encontrado</h3>
-                    <p class="text-[12px] font-sans-ui card-texto uppercase tracking-widest m-0">Verifica la ortografía.</p>
-                </div>
-            `;
-      showToast("Error en la búsqueda", "error");
-    } else {
-      const isParis = query.toLowerCase() === "paris";
-      const cityDataMock = {
-        ciudad: query,
-        pais: isParis ? "Francia" : "País Simulado",
-        poblacion: isParis ? "2,161,000" : "1,500,000",
-        zonaHoraria: isParis ? "CET (UTC+1)" : "UTC-5",
-      };
-      container.innerHTML = renderTicket(cityDataMock);
-      showToast(`¡Destino localizado (Modo Prueba): ${cityDataMock.ciudad}!`);
-    }
+    container.innerHTML = `
+        <div class="mt-8 p-10 card-lugar shadow-xl rounded-sm text-center animate-fade-in border-t-[6px]" style="border-top-color: #ef4444 !important; border-color: #ef4444;">
+            <i data-lucide="map-x" class="w-12 h-12 mx-auto mb-4 text-[#ef4444]"></i>
+            <h3 class="text-3xl font-serif text-[#ef4444] mb-2">Destino no encontrado</h3>
+            <p class="text-[12px] font-sans-ui card-texto uppercase tracking-widest m-0">Verifica la ortografía o conexión.</p>
+        </div>
+    `;
+    showToast("Error en la búsqueda", "error");
     if (window.lucide) lucide.createIcons();
   } finally {
     btn.disabled = false;

@@ -1,0 +1,577 @@
+{
+    "version": 0.6,
+    "generator": "Overpass API 0.7.62.11 87bfad18",
+    "osm3s": {
+        "timestamp_osm_base": "2026-05-02T00:44:33Z",
+        "copyright": "The data included in this document is from www.openstreetmap.org. The data is made available under ODbL."
+    },
+    "elements": [
+        {
+            "type": "node",
+            "id": 721033687,
+            "lat": -33.4143977,
+            "lon": -70.6534896,
+            "tags": {
+                "addr:city": "Independencia",
+                "addr:country": "CL",
+                "addr:housenumber": "1053",
+                "addr:street": "San José",
+                "museum": "history",
+                "name": "Centro Nacional de Recuperación Patrimonial MINSAL",
+                "opening_hours": "Mo-Fr 10:00-17:00",
+                "operator": "Unidad de Patrimonio del Ministerio de Salud",
+                "operator:type": "public",
+                "source": "https://www.registromuseoschile.cl/663/w3-article-105691.html",
+                "tourism": "museum",
+                "website": "www.patrimoniodelasalud.cl"
+            }
+        },
+        {
+            "type": "node",
+            "id": 1214175916,
+            "lat": -33.4312595,
+            "lon": -70.634155,
+            "tags": {
+                "addr:city": "Providencia",
+                "addr:country": "CL",
+                "addr:housenumber": "192",
+                "addr:street": "Pasaje Fernando Márquez de La Plata",
+                "architect": "Germán Rodríguez Arias y Carlos Martner",
+                "description": "Monumento Histórico de Chile desde el 31 de Julio de 1990",
+                "fee": "yes",
+                "museum": "person",
+                "name": "Casa Museo La Chascona",
+                "note": "entrada en intersección de pasaje Fernando Márquez de La Plata y calle Chucre Manzur",
+                "opening_hours": "Mo off; Mar-Dec: Tu-Su 10:00-18:00; Jan-Feb: Tu-Su 10:00-19:00",
+                "operator": "Fundación Pablo Neruda",
+                "operator:type": "private_for_profit",
+                "phone": "+56-2-2777 87 41 / +56-2-2737 87 12",
+                "start_date": "1986",
+                "tourism": "museum",
+                "website": "http://www.fundacionneruda.org/es/la-chascona/informacion-visita",
+                "wheelchair": "limited",
+                "wikidata": "Q5962867",
+                "wikimedia_commons": "File:Casa de Pablo Neruda La Chascona 03.JPG",
+                "wikipedia": "es:La Chascona"
+            }
+        },
+        {
+            "type": "node",
+            "id": 1278934534,
+            "lat": -33.4437338,
+            "lon": -70.6451672,
+            "tags": {
+                "addr:city": "Santiago",
+                "addr:country": "CL",
+                "addr:housenumber": "659",
+                "addr:street": "Marcoleta",
+                "alt_name": "Club de la República Gran Logia de Chile",
+                "name": "Museo Masónico",
+                "tourism": "museum"
+            }
+        },
+        {
+            "type": "node",
+            "id": 1297763053,
+            "lat": -33.4390245,
+            "lon": -70.6521952,
+            "tags": {
+                "addr:country": "CL",
+                "addr:housenumber": "361",
+                "addr:street": "Bandera",
+                "fee": "yes",
+                "name": "Museo de Arte Precolombino",
+                "name:en": "Museum of Precolombian Art",
+                "opening_hours": "Tu-Su 10:00-18:00",
+                "tourism": "museum",
+                "website": "https://museo.precolombino.cl/",
+                "wikidata": "Q517430",
+                "wikimedia_commons": "Category:Museo Chileno de Arte Precolombino",
+                "wikipedia": "es:Museo Chileno de Arte Precolombino"
+            }
+        },
+        {
+            "type": "node",
+            "id": 1297908112,
+            "lat": -33.4436101,
+            "lon": -70.647835,
+            "tags": {
+                "addr:city": "Santiago",
+                "addr:country": "CL",
+                "addr:housenumber": "834",
+                "addr:street": "Avenida Libertador Bernardo O'Higgins",
+                "museum": "art",
+                "name": "Museo de Arte Colonial de San Francisco",
+                "opening_hours": "Mo-Fr 09:30-13:30,15:00-18:00; Sa,Su 10:00-14:00",
+                "phone": "+56 2 26398737",
+                "source": "survey",
+                "tourism": "museum",
+                "website": "http://www.museosanfrancisco.com",
+                "wikidata": "Q16494156",
+                "wikimedia_commons": "Category:Museo de Arte Colonial de San Francisco",
+                "wikipedia": "es:Museo San Francisco (Santiago de Chile)"
+            }
+        },
+        {
+            "type": "node",
+            "id": 1865044936,
+            "lat": -33.510568,
+            "lon": -70.7662248,
+            "tags": {
+                "addr:country": "CL",
+                "name": "Museo del Carmen",
+                "tourism": "museum",
+                "wikidata": "Q56318282",
+                "wikimedia_commons": "Category:Museo del Carmen de Maipú",
+                "wikipedia": "es:Museo del Carmen de Maipú"
+            }
+        },
+        {
+            "type": "node",
+            "id": 2283670628,
+            "lat": -33.441749,
+            "lon": -70.6782795,
+            "tags": {
+                "addr:country": "CL",
+                "name": "Museo de la Educación Gabriela Mistral",
+                "source": "http://www.museodelaeducacion.cl/Vistas_Publicas/publicHome/homePublic.aspx?idInstitucion=98",
+                "tourism": "museum",
+                "wikidata": "Q6034227",
+                "wikimedia_commons": "Category:Museo de la Educación Gabriela Mistral",
+                "wikipedia": "es:Museo de la Educación Gabriela Mistral"
+            }
+        },
+        {
+            "type": "node",
+            "id": 2463424205,
+            "lat": -33.4398181,
+            "lon": -70.6837212,
+            "tags": {
+                "addr:city": "Santiago",
+                "addr:country": "CL",
+                "addr:street": "Santo Domingo",
+                "alt_name": "Museo de los Niños",
+                "museum": "children",
+                "name": "Museo Infantil",
+                "operator": "Corporación Privada para la Divulgación de la Ciencia y Tecnología (Corpdicyt)",
+                "operator:type": "private_non_profit",
+                "tourism": "museum",
+                "website": "http://www.corpdicyt.cl/minfantil/",
+                "wikidata": "Q20016884",
+                "wikipedia": "es:Museo Infantil (Chile)"
+            }
+        },
+        {
+            "type": "node",
+            "id": 2501991505,
+            "lat": -33.4423,
+            "lon": -70.6120982,
+            "tags": {
+                "addr:city": "Providencia",
+                "addr:country": "CL",
+                "addr:housenumber": "1690",
+                "addr:street": "Antonio Varas",
+                "name": "Museo Histórico de Carabineros",
+                "opening_hours": "Tu-Fr 09:00-17:00",
+                "tourism": "museum"
+            }
+        },
+        {
+            "type": "node",
+            "id": 3801481997,
+            "lat": -33.4248166,
+            "lon": -70.6448334,
+            "tags": {
+                "addr:city": "Santiago",
+                "addr:country": "CL",
+                "addr:housenumber": "683",
+                "addr:street": "Avenida Recoleta",
+                "museum": "history",
+                "name": "Museo Histórico Dominico",
+                "opening_hours": "Tu-Fr 10:00-17:30",
+                "operator": "Servicio Nacional del Patrimonio Cultural",
+                "operator:type": "government",
+                "start_date": "2005",
+                "tourism": "museum",
+                "website": "http://www.museodominico.cl",
+                "wikidata": "Q16911655",
+                "wikimedia_commons": "Category:Museo Histórico Dominico",
+                "wikipedia": "es:Museo Histórico Dominico"
+            }
+        },
+        {
+            "type": "node",
+            "id": 5312381322,
+            "lat": -33.5064164,
+            "lon": -70.6070539,
+            "tags": {
+                "addr:country": "CL",
+                "name": "Museo CSD Colo Colo",
+                "tourism": "museum"
+            }
+        },
+        {
+            "type": "node",
+            "id": 5604506491,
+            "lat": -33.4362529,
+            "lon": -70.6509728,
+            "tags": {
+                "addr:city": "Santiago",
+                "addr:country": "CL",
+                "addr:housenumber": "978",
+                "addr:street": "Santo Domingo",
+                "amenity": "fire_station",
+                "email": "contacto.mubo@cbs.cl",
+                "name": "Museo de Bomberos de Santiago (MUBO)",
+                "opening_hours": "Tu-Sa 10:00-18:00",
+                "tourism": "museum",
+                "website": "https://mubo.cl/",
+                "wikidata": "Q76824234",
+                "wikimedia_commons": "Category:Museo de Bomberos de Santiago",
+                "wikipedia": "es:Museo de Bomberos de Santiago"
+            }
+        },
+        {
+            "type": "node",
+            "id": 5904215285,
+            "lat": -33.4397152,
+            "lon": -70.6751391,
+            "tags": {
+                "addr:country": "CL",
+                "name": "Centro Cultural Casa Quemada",
+                "tourism": "museum"
+            }
+        },
+        {
+            "type": "node",
+            "id": 6938501880,
+            "lat": -33.3736873,
+            "lon": -70.6058756,
+            "tags": {
+                "addr:city": "Huechuraba",
+                "addr:street": "Camino Bosque Santiago",
+                "alt_name": "Museo de la Vivienda Chilena",
+                "check_date": "2024-02-26",
+                "museum": "open_air",
+                "name": "Museo de la Vivienda Tradicional Local",
+                "opening_hours": "Tu-Su 10:00-19:00",
+                "operator": "ParqueMet",
+                "operator:type": "public",
+                "start_date": "2019",
+                "tourism": "museum",
+                "wikidata": "Q86278859",
+                "wikipedia": "es:Museo de la Vivienda Tradicional Local"
+            }
+        },
+        {
+            "type": "node",
+            "id": 7622851659,
+            "lat": -33.4200391,
+            "lon": -70.6130226,
+            "tags": {
+                "addr:city": "Providencia",
+                "addr:housenumber": "2201",
+                "addr:street": "Avenida Santa María",
+                "architect": "Germán Bannen y Jorge Oyarzún",
+                "check_date": "2026-01-12",
+                "fee": "no",
+                "museum": "open_air",
+                "name": "Museo al Aire Libre Parque de Las Esculturas",
+                "operator": "Corporación Cultural de Providencia",
+                "operator:type": "public",
+                "start_date": "1986-12-17",
+                "tourism": "museum",
+                "wikidata": "Q16616308",
+                "wikimedia_commons": "Category:Parque de las Esculturas",
+                "wikipedia": "es:Parque de las Esculturas"
+            }
+        },
+        {
+            "type": "node",
+            "id": 9009050285,
+            "lat": -33.4082455,
+            "lon": -70.5416817,
+            "tags": {
+                "fee": "yes",
+                "name": "Museo de Cera Las Condes",
+                "opening_hours": "Tu-Su 10:30-19:00",
+                "tourism": "museum",
+                "wikidata": "Q65926757",
+                "wikimedia_commons": "Category:Museo de Cera de Las Condes",
+                "wikipedia": "es:Museo de Cera de Las Condes"
+            }
+        },
+        {
+            "type": "node",
+            "id": 10702579775,
+            "lat": -33.4457192,
+            "lon": -70.6533205,
+            "tags": {
+                "addr:city": "Santiago",
+                "addr:country": "CL",
+                "addr:street": "Avenida Presidente Bulnes",
+                "alt_name": "Panteón de los Héroes de la Patria",
+                "building": "yes",
+                "fee": "no",
+                "museum": "history",
+                "name": "Altar de la Patria",
+                "operator": "Escuela Militar del Libertador Bernardo O'Higgins",
+                "operator:type": "public",
+                "start_date": "20007",
+                "tourism": "museum",
+                "wikidata": "Q25414728",
+                "wikipedia": "es:Altar de la Patria (Chile)"
+            }
+        },
+        {
+            "type": "node",
+            "id": 10772181267,
+            "lat": -33.4921505,
+            "lon": -70.6136558,
+            "tags": {
+                "addr:city": "Macul",
+                "addr:street": "Arturo Prat",
+                "alt_name": "Museo a Cielo Abierto Macul",
+                "museum": "open_air",
+                "name": "Museo Macul Vimasur",
+                "opening_hours": "24/7",
+                "operator": "Corporación CulturalHa Crew y Junta de Vecinos Población Vicuña Mackenna Sur",
+                "operator:type": "community",
+                "short_name": "MUMA",
+                "start_date": "2022-09-04",
+                "tourism": "museum",
+                "website": "https://www.museomacul.cl/"
+            }
+        },
+        {
+            "type": "node",
+            "id": 10863893661,
+            "lat": -33.4421898,
+            "lon": -70.6758062,
+            "tags": {
+                "addr:city": "Santiago",
+                "addr:housenumber": "2919",
+                "addr:street": "Huérfanos",
+                "museum": "technology",
+                "name": "Museo del Sonido",
+                "operator": "Fundación Mariana Préndez de Casanueva",
+                "tourism": "museum",
+                "website": "https://www.museodelsonido.cl/",
+                "wikidata": "Q86280105",
+                "wikimedia_commons": "Category:Museo del Sonido",
+                "wikipedia": "es:Museo del Sonido"
+            }
+        },
+        {
+            "type": "node",
+            "id": 10915399287,
+            "lat": -33.4436168,
+            "lon": -70.6528467,
+            "tags": {
+                "addr:city": "Santiago",
+                "addr:housenumber": "25",
+                "addr:street": "Morandé",
+                "check_date": "2023-05-20",
+                "fee": "no",
+                "level": "-2",
+                "museum": "history",
+                "name": "Museo del Ahorro",
+                "opening_hours": "Mo-Fr 09:00-14:00",
+                "operator": "Banco Estado",
+                "operator:type": "business",
+                "start_date": "1992-12-22",
+                "tourism": "museum",
+                "wikidata": "Q24942099",
+                "wikimedia_commons": "Category:Museo del Ahorro",
+                "wikipedia": "es:Museo del Ahorro"
+            }
+        },
+        {
+            "type": "node",
+            "id": 10915439399,
+            "lat": -33.4649954,
+            "lon": -70.5955066,
+            "tags": {
+                "addr:city": "Ñuñoa",
+                "addr:street": "Avenida Grecia",
+                "fee": "no",
+                "museum": "art",
+                "name": "Museo de Arte Popular Americano Tomás Lago (MAPA)",
+                "operator": "Universidad de Chile",
+                "operator:type": "university",
+                "start_date": "1944-12-20",
+                "tourism": "museum",
+                "website": "https://mapa.uchile.cl/",
+                "wikidata": "Q2894417",
+                "wikipedia": "es:Museo de Arte Popular Americano"
+            }
+        },
+        {
+            "type": "node",
+            "id": 10917409223,
+            "lat": -33.4244775,
+            "lon": -70.6449615,
+            "tags": {
+                "addr:city": "Recoleta",
+                "addr:street": "Avenida Recoleta",
+                "museum": "art",
+                "name": "Museo de Artes Decorativas",
+                "opening_hours": "Tu-Fr 10:00-17:30",
+                "operator": "Centro Patrimonial de la Recoleta Dominica",
+                "operator:type": "government",
+                "start_date": "2005",
+                "tourism": "museum",
+                "website": "http://www.artdec.cl/",
+                "wikidata": "Q16494160",
+                "wikimedia_commons": "Category:Museo de Artes Decorativas, Santiago de Chile",
+                "wikipedia": "es:Museo de Artes Decorativas (Santiago de Chile)"
+            }
+        },
+        {
+            "type": "node",
+            "id": 10925461823,
+            "lat": -33.4353501,
+            "lon": -70.6434401,
+            "tags": {
+                "addr:city": "Santiago",
+                "addr:housenumber": "650",
+                "addr:street": "José Miguel de la Barra",
+                "fee": "no",
+                "museum": "art",
+                "name": "Museo Nacional de Bellas Artes",
+                "old_name": "Museo Nacional de Pinturas",
+                "operator": "Servicio Nacional del Patrimonio Cultural",
+                "operator:type": "public",
+                "short_name": "MNBA",
+                "start_date": "1880",
+                "tourism": "museum",
+                "website": "http://www.mnba.cl/",
+                "wikidata": "Q775376",
+                "wikimedia_commons": "Category:Museo Nacional de Bellas Artes, Chile",
+                "wikipedia": "es:Museo Nacional de Bellas Artes (Chile)"
+            }
+        },
+        {
+            "type": "node",
+            "id": 10927993051,
+            "lat": -33.4370031,
+            "lon": -70.63607,
+            "tags": {
+                "addr:city": "Santiago",
+                "addr:housenumber": "50",
+                "addr:street": "Merced",
+                "museum": "science",
+                "name": "Museo de Química y Farmacia",
+                "tourism": "museum",
+                "wikidata": "Q111972327",
+                "wikimedia_commons": "Category:Museo de Química y Farmacia Profesor César Leyton Caravagno",
+                "wikipedia": "es:Museo de Química y Farmacia Profesor César Leyton Caravagno"
+            }
+        },
+        {
+            "type": "node",
+            "id": 10928002663,
+            "lat": -33.4523832,
+            "lon": -70.6565849,
+            "tags": {
+                "addr:city": "Santiago",
+                "addr:housenumber": "438",
+                "addr:street": "Dieciocho",
+                "museum": "history",
+                "name": "Museo Palacio Cousiño",
+                "operator": "Santiago Cultura",
+                "operator:type": "public",
+                "tourism": "museum",
+                "website": "http://www.palaciocousino.cl/"
+            }
+        },
+        {
+            "type": "node",
+            "id": 10943273386,
+            "lat": -33.4321095,
+            "lon": -70.6559063,
+            "tags": {
+                "addr:city": "Santiago",
+                "addr:housenumber": "1301",
+                "addr:street": "Avenida Presidente Balmaceda",
+                "museum": "art",
+                "name": "Museo del Circo Nacional",
+                "tourism": "museum"
+            }
+        },
+        {
+            "type": "node",
+            "id": 10943273387,
+            "lat": -33.4411376,
+            "lon": -70.6528204,
+            "tags": {
+                "addr:city": "Santiago",
+                "addr:housenumber": "1180",
+                "addr:street": "Agustinas",
+                "museum": "history",
+                "name": "Museo Numismático",
+                "old_name": "Museo de la Historia Monetaria de Chile",
+                "operator": "Banco Central de Chile",
+                "operator:type": "business",
+                "tourism": "museum",
+                "website": "https://www.museobancocentral.cl/",
+                "wikidata": "Q86279665",
+                "wikimedia_commons": "Category:Museo Numismático del Banco Central de Chile",
+                "wikipedia": "es:Museo Numismático del Banco Central de Chile"
+            }
+        },
+        {
+            "type": "node",
+            "id": 10943273390,
+            "lat": -33.4378246,
+            "lon": -70.6516008,
+            "tags": {
+                "addr:city": "Santiago",
+                "addr:housenumber": "444",
+                "addr:street": "Plaza de Armas",
+                "museum": "art",
+                "name": "Museo de Arte Sagrado",
+                "operator": "Catedral Metropolitana de Santiago",
+                "operator:type": "religious",
+                "tourism": "museum",
+                "website": "https://www.registromuseoschile.cl/663/w3-article-126967.html",
+                "wikidata": "Q6940532"
+            }
+        },
+        {
+            "type": "node",
+            "id": 10943434533,
+            "lat": -33.4177998,
+            "lon": -70.6548073,
+            "tags": {
+                "addr:city": "Recoleta",
+                "addr:housenumber": "1130",
+                "addr:street": "Profesor Alberto Zañartu",
+                "name": "Museo de Anatomía",
+                "operator": "Facultad de Medicina U. de Chile",
+                "operator:type": "university",
+                "tourism": "museum",
+                "wikidata": "Q106651137",
+                "wikipedia": "es:Museo de Anatomía"
+            }
+        },
+        {
+            "type": "node",
+            "id": 10943434534,
+            "lat": -33.4193457,
+            "lon": -70.6555141,
+            "tags": {
+                "addr:city": "Independencia",
+                "addr:housenumber": "1027",
+                "addr:street": "Avenida Independencia",
+                "name": "Museo Nacional de Medicina Dr. Enrique Laval",
+                "operator": "Universidad de Chile",
+                "operator:type": "university",
+                "tourism": "museum",
+                "wikidata": "Q29983304",
+                "wikimedia_commons": "Category:Museo Nacional de Medicina Dr Enrique Laval",
+                "wikipedia": "es:Museo Nacional de Medicina Dr. Enrique Laval"
+            }
+        }
+    ]
+}

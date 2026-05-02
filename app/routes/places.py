@@ -16,12 +16,19 @@ def places_endpoint():
             {"error": "Los parámetros 'city' y 'category' son requeridos"}
         ), 400
 
-    if category not in ALL_CATEGORIES:
+    # 1. Data Cleaning de Entrada
+    clean_category = category.lower().strip()
+
+    # 2. Validación de Seguridad Estricta
+    if clean_category not in ALL_CATEGORIES:
         return jsonify(
-            {"error": f"Categoría inválida. Opciones: {', '.join(ALL_CATEGORIES)}"}
+            {
+                "error": f"Categoría inválida '{category}'. Opciones: {', '.join(ALL_CATEGORIES)}"
+            }
         ), 400
 
-    result = get_places(city, category)
+    # 3. 👇 CORRECCIÓN CRÍTICA: Le entregamos a "El Cocinero" el ingrediente YA LIMPIO (clean_category)
+    result = get_places(city, clean_category)
 
     if isinstance(result, tuple):
         return jsonify(result[0]), result[1]
