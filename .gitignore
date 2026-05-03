@@ -1,12 +1,10 @@
-# Python
 __pycache__/
 *.pyc
 venv/
 .env
-
-# Postgres
-*.sql 
-dumps/
-
-# OS
 .DS_Store
+*.sqlite3
+FEATURES.md
+project_analysis.md
+tree.txt
+.editorconfig

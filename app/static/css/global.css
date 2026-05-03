@@ -1,0 +1,100 @@
+body {
+    font-family: "Playfair Display", serif;
+    background-color: #ffffff !important; 
+    color: #000000 !important;
+    transition-property: color, background-color, border-color, fill, stroke;
+    transition-duration: 500ms;
+    overflow-x: hidden;
+}
+
+html.dark body, 
+html.dark body.bg-white,
+html.dark .dark\:bg-\[\#0a0a0a\] {
+    background-color: #0a0a0a !important; 
+    color: #ffffff !important;
+}
+
+html.dark .bg-white,
+html.dark .dark\:bg-\[\#141414\] { background-color: #141414 !important; }
+html.dark .dark\:bg-\[\#1a1a1a\] { background-color: #1a1a1a !important; }
+html.dark .dark\:bg-black { background-color: #000000 !important; }
+
+html.dark .text-black,
+html.dark .dark\:text-white { color: #ffffff !important; }
+
+html.dark .dark\:border-\[\#27dae0\] { border-color: #27dae0 !important; }
+html.dark .dark\:border-t-\[\#27dae0\] { border-top-color: #27dae0 !important; }
+html.dark .dark\:border-\[\#333\] { border-color: #333333 !important; }
+
+/* --- TEXTO --- */
+.force-black { color: #000000 !important; }
+html.dark .force-black, .dark .force-black { color: #ffffff !important; }
+.card-texto { color: #000000; }
+html.dark .card-texto, .dark .card-texto { color: #ffffff; }
+
+#theme-toggle-btn {
+    background-color: #ffffff !important;
+    color: #000000 !important;
+    border: 1px solid #e5e5e5 !important;
+    transition: all 0.3s ease;
+}
+html.dark #theme-toggle-btn, .dark #theme-toggle-btn {
+    background-color: #1a1a1a !important;
+    color: #ffffff !important;
+    border: 1px solid #333333 !important;
+}
+
+.toast-dinamico { background-color: #ffffff; color: #000000; }
+html.dark .toast-dinamico, .dark .toast-dinamico { background-color: #1a1a1a; color: #ffffff; }
+
+.card-lugar { background-color: #ffffff; border: 1px solid #e5e5e5; }
+html.dark .card-lugar { background-color: #141414; border: 1px solid #27dae0; }
+
+.card-info { background-color: #ffffff; color: #000000; }
+html.dark .card-info { background-color: #141414; color: #ffffff; border: 1px solid #27dae0; }
+
+.card-lista-lugar {
+    background-color: #ffffff !important;
+    border: 1px solid #e5e5e5 !important;
+    border-top: 6px solid #27dae0 !important;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+    cursor: pointer;
+}
+html.dark .card-lista-lugar {
+    background-color: #141414 !important;
+    border: 1px solid #222222 !important;
+    border-top: 6px solid #27dae0 !important;
+}
+.card-lista-lugar:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05); }
+html.dark .card-lista-lugar:hover { box-shadow: 0 10px 25px rgba(39, 218, 224, 0.1); }
+
+.search-container { background-color: #ffffff !important; }
+html.dark .search-container { background-color: #000000 !important; }
+
+#search-input.search-input-field {
+    background-color: transparent !important; color: #000000 !important; caret-color: #27dae0 !important;
+}
+html.dark #search-input.search-input-field { color: #ffffff !important; }
+#search-input.search-input-field:focus { outline: none !important; box-shadow: none !important; }
+
+input:-webkit-autofill, input:-webkit-autofill:hover, input:-webkit-autofill:focus {
+    -webkit-text-fill-color: #000000 !important; -webkit-box-shadow: 0 0 0px 1000px #ffffff inset !important; transition: background-color 5000s ease-in-out 0s;
+}
+html.dark input:-webkit-autofill, html.dark input:-webkit-autofill:hover, html.dark input:-webkit-autofill:focus {
+    -webkit-text-fill-color: #ffffff !important; -webkit-box-shadow: 0 0 0px 1000px #000000 inset !important;
+}
+input::placeholder { transition: opacity 0.3s ease; }
+input:focus::placeholder { opacity: 0.5; }
+
+.animate-fade-in { animation: fade-in 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+@keyframes fade-in { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { border-radius: 9999px; background-color: #27dae0; }
+
+.places-scroll::-webkit-scrollbar { width: 5px; }
+.places-scroll::-webkit-scrollbar-track { background: transparent; }
+.places-scroll::-webkit-scrollbar-thumb { background-color: #27dae0; border-radius: 10px; }
+
+.gm-style iframe + div { border: none !important; } 
