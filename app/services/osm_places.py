@@ -38,8 +38,8 @@ def fetch_places_from_wrapper(city_name, latitude, longitude, category, limit=10
         category_info = PLACE_CATEGORIES.get("turismo")
         logger.warning(f"Categoría '{category}' no encontrada, usando 'turismo'")
 
-    # 🚀 OPTIMIZACIÓN: Solo usa los primeros 2 tags más específicos
-    tags_list = category_info.get("osm_tags", ['["tourism"="attraction"]'])[:2]
+    # 🚀 OPTIMIZACIÓN: Usa todos los tags de la categoría
+    tags_list = category_info.get("osm_tags", ['["tourism"="attraction"]'])
     logger.debug(f"Tags a consultar: {tags_list}")
 
     # 2. Radio optimizado: 25km (no causa timeouts)
@@ -49,12 +49,12 @@ def fetch_places_from_wrapper(city_name, latitude, longitude, category, limit=10
     # IMPORTANTE: Cada etiqueta en una línea separada dentro del query
     query_body = ""
     for tag in tags_list:
-        query_body += f"  node{tag}(around:{radius_meters},{latitude},{longitude});\n"
+        query_body += f"  nwr{tag}(around:{radius_meters},{latitude},{longitude});\n"
 
     overpass_query = f"""[out:json][timeout:20];
 (
 {query_body});
-out body {limit};
+out body center {limit};
 """
 
     url = "https://overpass-api.de/api/interpreter"
