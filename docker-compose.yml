@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  # Servicio de Base de Datos
+  db:
+    image: postgres:15
+    container_name: citylens_db
+    restart: always
+    environment:
+      POSTGRES_USER: user_admin
+      POSTGRES_PASSWORD: password_seguro
+      POSTGRES_DB: citylens_db
+    volumes:
+      # 🔵 VOLUMEN: Aquí es donde tus favoritos se vuelven "indestructibles"
+      - ./postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  # Servicio de tu App Flask
+  web:
+    build: .
+    container_name: citylens_app
+    restart: always
+    ports:
+      - "5000:5000"
+    environment:
+      # Conectamos Flask con el contenedor de la base de datos
+      DATABASE_URL: postgresql://user_admin:password_seguro@db:5432/citylens_db
+      FLASK_ENV: development
+    depends_on:
+      - db
