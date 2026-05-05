@@ -9,56 +9,61 @@ from flask_sqlalchemy import SQLAlchemy
 
 load_dotenv()
 
-# 1. AQUÍ NACE LA ÚNICA INSTANCIA (El candado único)
+# 1. Instancia única
 db = SQLAlchemy()
 migrate = Migrate()
 
 
-# 2. Configurar logging estructurado
+# 2. Logging estructurado
 def setup_logging():
-    """Configura logging con formato estructurado"""
     log_format = "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
     logging.basicConfig(
         level=logging.INFO,
         format=log_format,
-        handlers=[
-            logging.StreamHandler(),  # Console output
-        ],
+        handlers=[logging.StreamHandler()],
     )
     return logging.getLogger(__name__)
 
 
 def create_app():
-    # Eliminamos las rutas relativas. Flask buscará 'templates' y 'static' dentro de 'app' por defecto.
     app = Flask(__name__)
 
-    # Configurar logging
     setup_logging()
     logger = logging.getLogger(__name__)
     logger.info("🚀 Iniciando CityLens App Factory")
 
-    app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URL")
+    # 🔐 Variables de entorno (SIN hardcode)
+    database_url = os.getenv("DATABASE_URL")
+    if not database_url:
+        raise RuntimeError("❌ DATABASE_URL no está definida en variables de entorno")
+
+    origen_permitido = os.getenv("ORIGEN_PERMITIDO")
+    if not origen_permitido:
+        raise RuntimeError("❌ ORIGEN_PERMITIDO no está definida en variables de entorno")
+
+    # Configuración Flask
+    app.config["SQLALCHEMY_DATABASE_URI"] = database_url
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
-    origen_permitido = os.getenv("ORIGEN_PERMITIDO", "http://127.0.0.1:5500")
+    # CORS dinámico desde env
     CORS(app, resources={r"/api/*": {"origins": origen_permitido}})
 
-    # 2. VINCULAMOS LA INSTANCIA A LA APP
+    # 3. Inicialización
     db.init_app(app)
     migrate.init_app(app, db)
 
-    # 3. IMPORTACIONES DIFERIDAS
+    # 4. Importaciones diferidas
     with app.app_context():
         from app import models
 
-    # 4. Registramos los Blueprints (Tus Meseros y tu Recepcionista)
+    # 5. Blueprints
     from app.routes.cities import cities
-    from app.routes.main import main  # Importamos al Recepcionista oficial
+    from app.routes.main import main
     from app.routes.places import places
 
     app.register_blueprint(cities)
     app.register_blueprint(places)
-    app.register_blueprint(main)  # Le damos el control de la ruta "/" y "/city"
+    app.register_blueprint(main)
 
     logger.info("✅ Blueprints registrados exitosamente")
 

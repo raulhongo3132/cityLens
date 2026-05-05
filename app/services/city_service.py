@@ -1,15 +1,18 @@
-# services/city_service.py
+# app/services/city_service.py
 import logging
 import unicodedata
-
 import requests
+import os
 from sqlalchemy import or_
 from sqlalchemy.exc import SQLAlchemyError
 
 from app import db
-from app.models import City
+from app.models import City, Favorite
 
 logger = logging.getLogger(__name__)
+
+# ✅ Variable de entorno con fallback seguro
+BASE_URL = os.getenv("RESTCOUNTRIES_API_URL", "https://restcountries.com/v3.1")
 
 
 def sanitize_search_term(term):
@@ -38,17 +41,16 @@ def get_city_data(name):
         return {"error": "Término de búsqueda inválido."}, 400
 
     try:
-        # 1. Búsqueda en La Despensa (PostgreSQL)
+        # 1. Búsqueda en caché (PostgreSQL/SQLite)
         cached_city = City.query.filter(
             or_(
                 City.search_name == clean_name,
                 City.name.ilike(f"%{name}%")
             )
         ).first()
+
         if cached_city:
-            logger.info(
-                f"✅ Destino '{cached_city.name}' obtenido de caché (PostgreSQL)"
-            )
+            logger.info(f"✅ Destino '{cached_city.name}' obtenido de caché")
             return {
                 "name": cached_city.name,
                 "country": cached_city.country,
@@ -58,59 +60,48 @@ def get_city_data(name):
                 "lat": cached_city.lat,
                 "lon": cached_city.lon,
             }
+
     except SQLAlchemyError as e:
         db.session.rollback()
         logger.error(f"Error de base de datos al buscar ciudad: {str(e)}")
         return {"error": "Error de base de datos.", "detalle": str(e)}, 500
 
-    logger.info(
-        f"🌐 '{name}' no encontrado en caché. Consultando REST Countries API..."
-    )
-
-    url = f"https://restcountries.com/v3.1/translation/{name}"
+    # 🌐 Consulta a API externa usando variable de entorno
+    url = f"{BASE_URL}/translation/{name}"
 
     try:
         response = requests.get(url, timeout=5)
+
         if response.status_code == 404:
-            url_capital = f"https://restcountries.com/v3.1/capital/{name}"
+            url_capital = f"{BASE_URL}/capital/{name}"
             response = requests.get(url_capital, timeout=5)
 
         response.raise_for_status()
         payload = response.json()
 
         if not payload:
-            logger.warning(f"País no encontrado en REST Countries: {name}")
             return {"error": "No se encontraron datos."}, 404
 
-        # Ordenar por población para asegurar el país principal
         payload.sort(key=lambda x: x.get("population", 0), reverse=True)
         country_data = payload[0]
 
-        # Extracción de datos oficiales
         capital_name = country_data.get("capital", [name])[0]
         country_name = country_data.get("name", {}).get("common", "Unknown")
         population = country_data.get("population", 0)
-        timezones = country_data.get("timezones", ["UTC"])
-        timezone_str = timezones[0] if timezones else "UTC"
-
-        # 👇 AQUÍ ESTABAN LOS INGREDIENTES EXTRAVIADOS
+        timezone_str = country_data.get("timezones", ["UTC"])[0]
         iso_code = country_data.get("cca2", "")
         flag_url = country_data.get("flags", {}).get("svg", "")
 
-        # Extracción de coordenadas de la CAPITAL (Para Búsqueda por Radio Espacial)
         capital_info = country_data.get("capitalInfo", {})
         capital_latlng = capital_info.get("latlng", [])
 
         if len(capital_latlng) >= 2:
-            lat = capital_latlng[0]
-            lon = capital_latlng[1]
+            lat, lon = capital_latlng[0], capital_latlng[1]
         else:
-            # Fallback al centro del país si no hay capital oficial
             latlng = country_data.get("latlng", [None, None])
-            lat = latlng[0] if len(latlng) > 0 else None
-            lon = latlng[1] if len(latlng) > 1 else None
+            lat, lon = latlng[0], latlng[1]
 
-        # 2. Persistencia en La Despensa
+        # 2. Persistencia en la Base de Datos
         new_city = City(
             name=country_name,
             country=country_name,
@@ -126,7 +117,6 @@ def get_city_data(name):
 
         db.session.add(new_city)
         db.session.commit()
-        logger.info(f"✅ País '{country_name}' guardado en caché")
 
         return {
             "name": new_city.name,
@@ -140,9 +130,52 @@ def get_city_data(name):
 
     except requests.RequestException as e:
         db.session.rollback()
-        logger.error(f"Error conectando con REST Countries API: {str(e)}")
         return {"error": "API externa no disponible.", "detalle": str(e)}, 503
+
     except SQLAlchemyError as e:
         db.session.rollback()
-        logger.error(f"Error guardando ciudad en BD: {str(e)}")
         return {"error": "Error guardando en base de datos.", "detalle": str(e)}, 500
+
+
+# --- LÓGICA DE FAVORITOS ---
+
+def save_favorite(city_name, user_uuid):
+    """Guarda un destino favorito vinculado a un UUID de sesión"""
+    try:
+        city = City.query.filter(City.name.ilike(f"%{city_name}%")).first()
+
+        if not city:
+            return {"error": "Busca la ciudad primero para poder guardarla."}, 404
+
+        existing = Favorite.query.filter_by(user_uuid=user_uuid, city_id=city.id).first()
+        if existing:
+            return {"message": "Ya está en tus favoritos."}, 200
+
+        new_fav = Favorite(user_uuid=user_uuid, city_id=city.id)
+        db.session.add(new_fav)
+        db.session.commit()
+
+        return {"message": f"¡{city.name} guardado!"}, 201
+
+    except SQLAlchemyError:
+        db.session.rollback()
+        return {"error": "Error de base de datos."}, 500
+
+
+def get_favorites_by_user(user_uuid):
+    """Recupera la lista de favoritos del usuario"""
+    try:
+        favorites = Favorite.query.filter_by(user_uuid=user_uuid).all()
+
+        return [
+            {
+                "name": fav.city.name,
+                "country": fav.city.country,
+                "population": fav.city.population,
+                "timezone": fav.city.timezone
+            }
+            for fav in favorites
+        ], 200
+
+    except SQLAlchemyError:
+        return {"error": "Error al recuperar favoritos."}, 500

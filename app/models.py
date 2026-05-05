@@ -1,7 +1,5 @@
 from datetime import datetime
-
 from . import db
-
 
 class City(db.Model):
     __tablename__ = "cities"
@@ -12,13 +10,15 @@ class City(db.Model):
     timezone = db.Column(db.String(50))
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     places = db.relationship("Place", backref="city", lazy=True)
-    iso_code = db.Column(db.String(5), nullable=True)  # Código cca2 (ej. 'MX')
-    flag_url = db.Column(db.String(255), nullable=True)  # URL de la bandera
-    capital = db.Column(db.String(100), nullable=True)  # Nombre de la capital
-    lat = db.Column(db.Float, nullable=True)  # Latitud central del país
-    lon = db.Column(db.Float, nullable=True)  # Longitud central del país
+    # Relación con favoritos para poder borrarlos en cascada si se borra la ciudad
+    favorites = db.relationship("Favorite", backref="city", lazy=True, cascade="all, delete-orphan")
+    
+    iso_code = db.Column(db.String(5), nullable=True)
+    flag_url = db.Column(db.String(255), nullable=True)
+    capital = db.Column(db.String(100), nullable=True)
+    lat = db.Column(db.Float, nullable=True)
+    lon = db.Column(db.Float, nullable=True)
     search_name = db.Column(db.String(100), nullable=True)
-
 
 class Place(db.Model):
     __tablename__ = "places"
@@ -39,4 +39,18 @@ class Place(db.Model):
 
     __table_args__ = (
         db.UniqueConstraint('city_id', 'osm_place_id', name='uq_city_osm_place'),
+    )
+
+# 👇 NUEVA TABLA: El corazón de tu Propuesta de Valor Única (PVU)
+class Favorite(db.Model):
+    __tablename__ = "favorites"
+    id = db.Column(db.Integer, primary_key=True)
+    # Este UUID se generará en el frontend y se guardará en LocalStorage
+    user_uuid = db.Column(db.String(100), nullable=False, index=True)
+    city_id = db.Column(db.Integer, db.ForeignKey("cities.id"), nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    # Restricción: Un usuario no puede agregar la misma ciudad dos veces a favoritos
+    __table_args__ = (
+        db.UniqueConstraint('user_uuid', 'city_id', name='uq_user_favorite_city'),
     )
