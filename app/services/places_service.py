@@ -88,7 +88,7 @@ def get_places(city_name, category):
         for idx, element in enumerate(osm_data["elements"], 1):
             tags = element.get("tags", {})
 
-            name = tags.get("name")
+            name = tags.get("name:es") or tags.get("name:en") or tags.get("int_name") or tags.get("name")
             if not name:
                 continue
 
@@ -160,8 +160,9 @@ def get_places(city_name, category):
 
             # Si el error es por restricción única, intenta insertar uno por uno
             if (
-                "UniqueViolation" in str(type(e).__name__)
-                or "duplicada" in str(e).lower()
+                "IntegrityError" in str(type(e).__name__)
+                or "duplicate" in str(e).lower()
+                or "unique" in str(e).lower()
             ):
                 logger.warning(
                     f"⚠️ Algunos lugares podrían estar duplicados. "
@@ -170,7 +171,7 @@ def get_places(city_name, category):
                 places_to_return = []
                 for idx, element in enumerate(osm_data["elements"], 1):
                     tags = element.get("tags", {})
-                    name = tags.get("name")
+                    name = tags.get("name:es") or tags.get("name:en") or tags.get("int_name") or tags.get("name")
                     if not name:
                         continue
 

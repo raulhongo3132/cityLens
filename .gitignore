@@ -8,3 +8,4 @@ FEATURES.md
 project_analysis.md
 tree.txt
 .editorconfig
+migrations/

@@ -3,6 +3,7 @@ import logging
 import unicodedata
 
 import requests
+from sqlalchemy import or_
 from sqlalchemy.exc import SQLAlchemyError
 
 from app import db
@@ -38,7 +39,12 @@ def get_city_data(name):
 
     try:
         # 1. Búsqueda en La Despensa (PostgreSQL)
-        cached_city = City.query.filter(City.name.ilike(f"%{clean_name}%")).first()
+        cached_city = City.query.filter(
+            or_(
+                City.search_name == clean_name,
+                City.name.ilike(f"%{name}%")
+            )
+        ).first()
         if cached_city:
             logger.info(
                 f"✅ Destino '{cached_city.name}' obtenido de caché (PostgreSQL)"
@@ -108,6 +114,7 @@ def get_city_data(name):
         new_city = City(
             name=country_name,
             country=country_name,
+            search_name=sanitize_search_term(country_name),
             population=population,
             timezone=timezone_str,
             iso_code=iso_code,

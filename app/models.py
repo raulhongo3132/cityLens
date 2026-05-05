@@ -17,6 +17,7 @@ class City(db.Model):
     capital = db.Column(db.String(100), nullable=True)  # Nombre de la capital
     lat = db.Column(db.Float, nullable=True)  # Latitud central del país
     lon = db.Column(db.Float, nullable=True)  # Longitud central del país
+    search_name = db.Column(db.String(100), nullable=True)
 
 
 class Place(db.Model):
@@ -27,7 +28,7 @@ class Place(db.Model):
     category = db.Column(db.String(100))
     rating = db.Column(db.Float)
     address = db.Column(db.String(500))
-    osm_place_id = db.Column(db.String(255), unique=True)
+    osm_place_id = db.Column(db.String(255))
     price_level = db.Column(db.Integer)
     opening_hours = db.Column(db.String(255))
     cached_at = db.Column(db.DateTime, default=datetime.utcnow)
@@ -35,3 +36,7 @@ class Place(db.Model):
     longitude = db.Column(db.Float, nullable=True)
     website = db.Column(db.String(255), nullable=True)
     phone = db.Column(db.String(50), nullable=True)
+
+    __table_args__ = (
+        db.UniqueConstraint('city_id', 'osm_place_id', name='uq_city_osm_place'),
+    )
