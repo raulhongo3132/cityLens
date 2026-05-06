@@ -53,11 +53,17 @@ def create_app():
 
     # 4. Registramos los Blueprints (Tus Meseros y tu Recepcionista)
     from app.routes.cities import cities
+    from app.routes.favorites import (
+        favorites,  # Importamos rutas de favoritos con seguridad
+    )
+    from app.routes.docs import docs  # Importamos documentación Swagger
     from app.routes.main import main  # Importamos al Recepcionista oficial
     from app.routes.places import places
 
     app.register_blueprint(cities)
     app.register_blueprint(places)
+    app.register_blueprint(favorites)  # Rutas protegidas con @require_api_key
+    app.register_blueprint(docs)  # Documentación Swagger UI
     app.register_blueprint(main)  # Le damos el control de la ruta "/" y "/city"
 
     logger.info("✅ Blueprints registrados exitosamente")

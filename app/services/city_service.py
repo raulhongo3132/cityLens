@@ -12,6 +12,41 @@ from app.models import City
 logger = logging.getLogger(__name__)
 
 
+def get_city_coordinates(city_name, country_name=None):
+    """
+    Geocoding: Obtiene coordenadas y bbox de una ciudad/país usando Nominatim.
+    """
+    query = city_name
+    if country_name:
+        query += f", {country_name}"
+
+    url = "https://nominatim.openstreetmap.org/search"
+    params = {"format": "json", "q": query, "limit": 1, "addressdetails": 1}
+    headers = {"User-Agent": "CityLens/1.0"}
+
+    try:
+        response = requests.get(url, params=params, headers=headers, timeout=5)
+        response.raise_for_status()
+        data = response.json()
+
+        if data:
+            lat = float(data[0]["lat"])
+            lon = float(data[0]["lon"])
+            bbox = data[0].get("boundingbox")
+            if bbox:
+                bbox = [float(x) for x in bbox]  # [south, north, west, east]
+            logger.info(
+                f"✅ Coordenadas y bbox obtenidos para '{query}': {lat}, {lon}, bbox: {bbox}"
+            )
+            return lat, lon, bbox
+        else:
+            logger.warning(f"No se encontraron coordenadas para '{query}'")
+            return None, None, None
+    except requests.RequestException as e:
+        logger.error(f"Error en geocoding para '{query}': {e}")
+        return None, None, None
+
+
 def sanitize_search_term(term):
     """
     Data Cleaning de Entrada: Estandariza la entrada del usuario.
@@ -40,10 +75,7 @@ def get_city_data(name):
     try:
         # 1. Búsqueda en La Despensa (PostgreSQL)
         cached_city = City.query.filter(
-            or_(
-                City.search_name == clean_name,
-                City.name.ilike(f"%{name}%")
-            )
+            or_(City.search_name == clean_name, City.name.ilike(f"%{name}%"))
         ).first()
         if cached_city:
             logger.info(
@@ -57,6 +89,14 @@ def get_city_data(name):
                 "iso_code": cached_city.iso_code,
                 "lat": cached_city.lat,
                 "lon": cached_city.lon,
+                "bbox": [
+                    cached_city.bbox_south,
+                    cached_city.bbox_north,
+                    cached_city.bbox_west,
+                    cached_city.bbox_east,
+                ]
+                if cached_city.bbox_south
+                else None,
             }
     except SQLAlchemyError as e:
         db.session.rollback()
@@ -97,18 +137,15 @@ def get_city_data(name):
         iso_code = country_data.get("cca2", "")
         flag_url = country_data.get("flags", {}).get("svg", "")
 
-        # Extracción de coordenadas de la CAPITAL (Para Búsqueda por Radio Espacial)
-        capital_info = country_data.get("capitalInfo", {})
-        capital_latlng = capital_info.get("latlng", [])
+        # Extracción de coordenadas usando geocoding del país
+        lat, lon, bbox = get_city_coordinates(country_name)
 
-        if len(capital_latlng) >= 2:
-            lat = capital_latlng[0]
-            lon = capital_latlng[1]
-        else:
-            # Fallback al centro del país si no hay capital oficial
+        if lat is None or lon is None:
+            # Fallback a coordenadas de REST Countries
             latlng = country_data.get("latlng", [None, None])
             lat = latlng[0] if len(latlng) > 0 else None
             lon = latlng[1] if len(latlng) > 1 else None
+            bbox = None
 
         # 2. Persistencia en La Despensa
         new_city = City(
@@ -122,6 +159,10 @@ def get_city_data(name):
             capital=capital_name,
             lat=lat,
             lon=lon,
+            bbox_south=bbox[0] if bbox else None,
+            bbox_north=bbox[1] if bbox else None,
+            bbox_west=bbox[2] if bbox else None,
+            bbox_east=bbox[3] if bbox else None,
         )
 
         db.session.add(new_city)
@@ -136,6 +177,7 @@ def get_city_data(name):
             "iso_code": new_city.iso_code,
             "lat": new_city.lat,
             "lon": new_city.lon,
+            "bbox": bbox,
         }
 
     except requests.RequestException as e:

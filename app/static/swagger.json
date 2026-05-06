@@ -1,0 +1,218 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "CityLens API",
+    "version": "1.0.0",
+    "description": "Documentación Swagger de los endpoints públicos y protegidos de CityLens."
+  },
+  "servers": [
+    {
+      "url": "/",
+      "description": "Servidor local"
+    }
+  ],
+  "paths": {
+    "/api/city": {
+      "get": {
+        "summary": "Buscar ciudad",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Nombre de la ciudad o país a buscar"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Ciudad encontrada",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Ciudad no encontrada",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/places": {
+      "get": {
+        "summary": "Obtener lugares por ciudad y categoría",
+        "parameters": [
+          {
+            "name": "city",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Categoría de lugar: turismo, naturaleza, cultura, historico, destacados"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lugares devueltos exitosamente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No se encontraron lugares para la ciudad/categoría indicada",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/favorites": {
+      "get": {
+        "summary": "Listar favoritos",
+        "responses": {
+          "200": {
+            "description": "Lista de favoritos devuelta",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Añadir ciudad a favoritos",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "city_id": {
+                    "type": "integer"
+                  }
+                },
+                "required": ["city_id"]
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "X-API-KEY",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Favorito creado"
+          },
+          "401": {
+            "description": "Header X-API-KEY faltante"
+          },
+          "403": {
+            "description": "X-API-KEY inválido"
+          }
+        }
+      }
+    },
+    "/api/favorites/{city_id}": {
+      "get": {
+        "summary": "Obtener detalle de favorito",
+        "parameters": [
+          {
+            "name": "city_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Detalle devuelto"
+          },
+          "404": {
+            "description": "Favorito no encontrado"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Eliminar favorito",
+        "parameters": [
+          {
+            "name": "city_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "X-API-KEY",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Favorito eliminado"
+          },
+          "401": {
+            "description": "Header X-API-KEY faltante"
+          },
+          "403": {
+            "description": "X-API-KEY inválido"
+          },
+          "404": {
+            "description": "Favorito no encontrado"
+          }
+        }
+      }
+    }
+  }
+}

@@ -17,6 +17,10 @@ class City(db.Model):
     capital = db.Column(db.String(100), nullable=True)  # Nombre de la capital
     lat = db.Column(db.Float, nullable=True)  # Latitud central del país
     lon = db.Column(db.Float, nullable=True)  # Longitud central del país
+    bbox_south = db.Column(db.Float, nullable=True)
+    bbox_north = db.Column(db.Float, nullable=True)
+    bbox_west = db.Column(db.Float, nullable=True)
+    bbox_east = db.Column(db.Float, nullable=True)
     search_name = db.Column(db.String(100), nullable=True)
 
 
@@ -38,5 +42,5 @@ class Place(db.Model):
     phone = db.Column(db.String(50), nullable=True)
 
     __table_args__ = (
-        db.UniqueConstraint('city_id', 'osm_place_id', name='uq_city_osm_place'),
+        db.UniqueConstraint("city_id", "osm_place_id", name="uq_city_osm_place"),
     )
