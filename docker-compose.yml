@@ -27,5 +27,6 @@ services:
       # Conectamos Flask con el contenedor de la base de datos
       DATABASE_URL: postgresql://user_admin:password_seguro@db:5432/citylens_db
       FLASK_ENV: development
+      ORIGEN_PERMITIDO: http://localhost:5000
     depends_on:
       - db
