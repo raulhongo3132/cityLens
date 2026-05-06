@@ -2,6 +2,7 @@ from flask import Blueprint, jsonify, request
 
 from app.constants import ALL_CATEGORIES
 from app.services.places_service import get_places
+from app.services.wiki_service import fetch_wikipedia_summary
 
 places = Blueprint("places", __name__)
 
@@ -34,3 +35,19 @@ def places_endpoint():
         return jsonify(result[0]), result[1]
 
     return jsonify(result), 200
+
+
+@places.route("/api/places/details", methods=["GET"])
+def place_details_endpoint():
+    name = request.args.get("name")
+
+    if not name:
+        return jsonify({"error": "El parámetro 'name' es requerido"}), 400
+
+    # Llamar al servicio de Wikipedia
+    details = fetch_wikipedia_summary(name)
+
+    if details is None:
+        return jsonify({"error": "Detalles no disponibles para este lugar"}), 404
+
+    return jsonify(details), 200

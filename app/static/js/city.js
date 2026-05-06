@@ -138,6 +138,39 @@ async function fetchPlaces(city, category) {
   }
 }
 
+async function loadPlaceDetails(placeName, detailsContainer) {
+  // Mostrar spinner
+  detailsContainer.classList.remove('hidden');
+  detailsContainer.innerHTML = `
+    <div class="text-center py-2">
+      <i data-lucide="loader-2" class="w-4 h-4 animate-spin text-brand inline-block"></i>
+      <span class="text-xs ml-2">Cargando detalles...</span>
+    </div>
+  `;
+  if (window.lucide) lucide.createIcons();
+
+  try {
+    const res = await fetch(`${API_URL}/places/details?name=${encodeURIComponent(placeName)}`);
+    const data = await res.json();
+
+    if (res.ok) {
+      // Inyectar imagen y texto
+      let html = `<div class="mt-3 p-3 bg-gray-50 dark:bg-gray-800 rounded">`;
+      if (data.thumbnail_source) {
+        html += `<img src="${data.thumbnail_source}" alt="${placeName}" class="w-full h-32 object-cover rounded mb-2">`;
+      }
+      html += `<p class="text-sm text-gray-700 dark:text-gray-300">${data.extract || data.description || 'Sin descripción disponible'}</p>`;
+      html += `</div>`;
+      detailsContainer.innerHTML = html;
+    } else {
+      detailsContainer.innerHTML = `<p class="text-sm text-gray-500 mt-2">Detalles no disponibles</p>`;
+    }
+  } catch (error) {
+    console.error('Error cargando detalles:', error);
+    detailsContainer.innerHTML = `<p class="text-sm text-red-500 mt-2">Error al cargar detalles</p>`;
+  }
+}
+
 function renderPlaces(places) {
   const list = document.getElementById("places-list");
 
@@ -169,6 +202,9 @@ function renderPlaces(places) {
                     
                     <div class="flex items-center justify-between mb-3 gap-3">
                         <h4 class="m-0 font-serif text-2xl fw-bold force-black truncate">${p.name || "Sin nombre"}</h4>
+                        <button class="btn-ver-mas bg-brand text-white px-3 py-1 rounded text-sm hover:bg-brand-dark transition-colors" data-place-name="${encodeURIComponent(p.name || "Lugar")}">
+                            Ver más
+                        </button>
                     </div>
                     
                     <div class="card-texto text-sm space-y-2 opacity-80">
@@ -184,6 +220,10 @@ function renderPlaces(places) {
                             <span class="force-black capitalize">${p.category || "General"}</span>
                         </p>
                     </div>
+                    
+                    <div id="details-${i}" class="details-container mt-3 hidden">
+                        <!-- Detalles de Wikipedia se inyectarán aquí -->
+                    </div>
                 </div>
                 `;
               })
@@ -191,6 +231,16 @@ function renderPlaces(places) {
         </div>`;
 
   if (window.lucide) lucide.createIcons();
+
+  // Event listener para botones "Ver más" usando event delegation
+  list.addEventListener('click', function(event) {
+    if (event.target.classList.contains('btn-ver-mas')) {
+      event.stopPropagation(); // Evitar que se active el onclick de la card
+      const placeName = decodeURIComponent(event.target.getAttribute('data-place-name'));
+      const detailsContainer = event.target.closest('.card-lista-lugar').querySelector('.details-container');
+      loadPlaceDetails(placeName, detailsContainer);
+    }
+  });
 }
 
 // Permite interacción directa abriendo en la misma vista las coordenadas

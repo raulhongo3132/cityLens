@@ -8,7 +8,15 @@ from sqlalchemy.exc import SQLAlchemyError
 
 from app import db
 from app.models import City, Place
-from app.services.osm_places import fetch_places_from_wrapper
+from app.services.osm_places import (
+    extract_place_address,
+    extract_place_coordinates,
+    extract_place_name,
+    extract_place_opening_hours,
+    extract_place_phone,
+    extract_place_website,
+    fetch_places_from_wrapper,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -66,12 +74,17 @@ def get_places(city_name, category):
             }, 400
 
         # Pasamos coordenadas exactas (requiere GET y no POST para Overpass)
+        bbox = None
+        if city.bbox_south:
+            bbox = [city.bbox_south, city.bbox_north, city.bbox_west, city.bbox_east]
+
         osm_data = fetch_places_from_wrapper(
             city_name=city.name,
             latitude=city.lat,
             longitude=city.lon,
             category=category,
-            limit=10,
+            limit=15,
+            bbox=bbox,
         )
 
         if not osm_data or "elements" not in osm_data:
@@ -82,35 +95,34 @@ def get_places(city_name, category):
                 "error": "No se encontraron lugares o falló la conexión con OpenStreetMap."
             }, 404
 
-        # 4. Fase de Data Cleaning
+        # 4. Fase de Data Cleaning con funciones de extracción
         places_to_return = []
 
         for idx, element in enumerate(osm_data["elements"], 1):
-            tags = element.get("tags", {})
+            # Extraer datos del elemento usando funciones especializadas
+            name = extract_place_name(element)
+            if name == "Sin nombre":
+                # Intentar nombres alternativos
+                tags = element.get("tags", {})
+                name = (
+                    tags.get("name:es")
+                    or tags.get("name:en")
+                    or tags.get("int_name")
+                    or name
+                )
+                if name == "Sin nombre":
+                    continue
 
-            name = tags.get("name:es") or tags.get("name:en") or tags.get("int_name") or tags.get("name")
-            if not name:
-                continue
-
-            street = tags.get("addr:street", "")
-            housenumber = tags.get("addr:housenumber", "")
-            address = f"{street} {housenumber}".strip()
-
-            if not address:
-                address = "Dirección no especificada en el mapa"
-
-            lat = element.get("lat")
-            lon = element.get("lon")
+            address = extract_place_address(element)
+            lat, lon = extract_place_coordinates(element)
 
             if not lat or not lon:
-                center = element.get("center", {})
-                lat = center.get("lat")
-                lon = center.get("lon")
+                logger.debug(f"⚠️ Elemento {idx} sin coordenadas válidas")
+                continue
 
-            # 👇 NUEVA EXTRACCIÓN: Sacamos la info extra del "Mercado Libre"
-            website = tags.get("website", tags.get("contact:website", ""))
-            phone = tags.get("phone", tags.get("contact:phone", ""))
-            opening_hours = tags.get("opening_hours", "")
+            website = extract_place_website(element)
+            phone = extract_place_phone(element)
+            opening_hours = extract_place_opening_hours(element)
 
             # Persistencia de datos enriquecidos
             place = Place(
@@ -171,7 +183,12 @@ def get_places(city_name, category):
                 places_to_return = []
                 for idx, element in enumerate(osm_data["elements"], 1):
                     tags = element.get("tags", {})
-                    name = tags.get("name:es") or tags.get("name:en") or tags.get("int_name") or tags.get("name")
+                    name = (
+                        tags.get("name:es")
+                        or tags.get("name:en")
+                        or tags.get("int_name")
+                        or tags.get("name")
+                    )
                     if not name:
                         continue
 

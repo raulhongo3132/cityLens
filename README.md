@@ -199,7 +199,29 @@ Verifica que las APIs externas (Rest Countries y OpenStreetMap) estén disponibl
 | Estructura base del proyecto   | ✅ Listo       |
 | Templates Jinja2 (index, city) | ✅ Listo       |
 | Estilos y JS del frontend      | ✅ Listo       |
-| Modelos de base de datos       | 🔧 En progreso |
-| Endpoint `/api/city`           | 🔧 En progreso |
-| Endpoint `/api/places`         | 🔧 En progreso |
-| Integración Google Places API  | 🔧 En progreso |
+| Modelos de base de datos       | ✅ Listo       |
+| Endpoint `/api/city`           | ✅ Listo       |
+| Endpoint `/api/places`         | ✅ Listo       |
+| Integración OpenStreetMap API  | ✅ Listo       |
+| Patrón Wrapper y Data Cleaning | ✅ Listo       |
+| Control de concurrencia        | ✅ Listo       |
+| Seguridad API Key              | ✅ Listo       |
+| Endpoints `/api/favorites`     | ✅ Listo       |
+| Persistencia de favoritos      | 🔧 En progreso |
+
+---
+
+## Seguridad
+
+La aplicación implementa protección mediante API Key para rutas de escritura. Consulta [`IMPLEMENTATION_REPORT.md`](IMPLEMENTATION_REPORT.md) para detalles completos sobre:
+
+- Decorador `@require_api_key` personalizado
+- Validación de header `X-API-KEY`
+- Ejemplos de uso desde JavaScript
+- Configuración en `.env`
+
+---
+
+## Documentación Técnica
+
+Para una documentación exhaustiva del proyecto, incluyendo arquitectura, patrones, flujo de datos y roadmap, consulta el archivo [`DOCUMENTATION.md`](DOCUMENTATION.md).

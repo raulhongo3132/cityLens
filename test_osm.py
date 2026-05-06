@@ -1,83 +1,87 @@
-# test_osm.py
-import json
+import time
 
 import requests
 
+LUGARES_PRUEBA = {
+    "Paris (Centro)": {"lat": 48.8584, "lon": 2.2945},
+    "CDMX (Zocalo)": {"lat": 19.4326, "lon": -99.1332},
+}
 
-def aislar_y_probar_overpass():
-    """
-    Script de diagnóstico de grado de ingeniería para probar la API de Overpass
-    aislada de la arquitectura Flask.
-    """
-    # Coordenadas exactas que tenemos en tu base de datos para Santiago de Chile
-    lat = -33.45
-    lon = -70.67
-    radio = 30000  # 30 kilómetros
 
-    # Vamos a usar la etiqueta exacta de la categoría "cultura" que estaba fallando
-    tag = '["tourism"="museum"]'
-
-    # Construimos la consulta QL exacta que nuestro Wrapper debería estar generando
-    query = f"""
-    [out:json][timeout:25];
-    (
-      nwr{tag}["name"](around:{radio},{lat},{lon});
-    );
-    out body center 30;
-    """
-
-    print("🚀 Iniciando prueba aislada de Overpass API...")
-    print(f"📡 Coordenadas: Lat {lat}, Lon {lon} (Santiago de Chile)")
-    print(f"🔍 Etiqueta QL: {tag}")
-    print("-" * 50)
-    print("Enviando el siguiente bloque al motor alemán:")
-    print(query)
-    print("-" * 50)
+def probar_overpass_optimizado(nombre_lugar, lat, lon, categoria):
+    print(f"\n{'=' * 50}")
+    print(f"🚀 PRUEBA PARA: {nombre_lugar} | Categoría: {categoria.upper()}")
 
     url = "https://overpass-api.de/api/interpreter"
-    headers = {"User-Agent": "CityLens_Sandbox_Test/1.0"}
+
+    # 1. Usamos 'nw' (Node y Way). Adiós a las Relations.
+    # 2. Radio de 3000m (súper rápido, cubre el centro de la ciudad).
+    # 3. Exigimos "wikidata" para popularidad global.
+    if categoria == "cultura":
+        nodos_query = f"""
+          nw(around:3000, {lat}, {lon})["tourism"="museum"]["wikidata"];
+          nw(around:3000, {lat}, {lon})["tourism"="gallery"]["wikidata"];
+        """
+    elif categoria == "destacados":
+        nodos_query = f"""
+          nw(around:3000, {lat}, {lon})["tourism"="attraction"]["wikidata"];
+          nw(around:3000, {lat}, {lon})["historic"="monument"]["wikidata"];
+        """
+
+    query = f"""
+    [out:json][timeout:15];
+    (
+    {nodos_query}
+    );
+    out 15 center tags;
+    """
 
     try:
-        response = requests.post(
-            url, data=query.encode("utf-8"), headers=headers, timeout=30
+        start_time = time.time()
+        headers = {
+            "User-Agent": "Datamundi-CityLens/1.0 (estudiante@sistemas.edu)",
+            "Accept": "*/*",
+        }
+
+        response = requests.post(url, data={"data": query}, headers=headers, timeout=20)
+
+        tiempo_total = round(time.time() - start_time, 2)
+        print(f"⏱️  Tiempo: {tiempo_total} seg | 📡 Status HTTP: {response.status_code}")
+
+        response.raise_for_status()
+        datos = response.json()
+        elementos = datos.get("elements", [])
+
+        print(
+            f"✅ Se encontraron {len(elementos)} lugares populares (Nodos y Edificios)."
         )
 
-        print(f"📥 Código HTTP de respuesta: {response.status_code}")
+        for i, el in enumerate(elementos, 1):
+            nombre = el.get("tags", {}).get("name", "Sin nombre")
+            tipo_osm = el.get("type", "desconocido")
 
-        if response.status_code == 200:
-            data = response.json()
-            elementos = data.get("elements", [])
-            print(f"📦 Total de elementos crudos devueltos: {len(elementos)}")
-
-            # Guardamos la evidencia en un archivo local para que la puedas inspeccionar a fondo
-            with open("osm_evidencia.json", "w", encoding="utf-8") as f:
-                json.dump(data, f, indent=4, ensure_ascii=False)
-            print("✅ El JSON completo ha sido guardado en 'osm_evidencia.json'")
-
-            # Mostramos un extracto del primer elemento si existe
-            if elementos:
-                print("\n👀 Muestra del primer elemento (Data Cruda):")
-                primer_elemento = {
-                    "id": elementos[0].get("id"),
-                    "type": elementos[0].get("type"),
-                    "name": elementos[0].get("tags", {}).get("name"),
-                    "tags": elementos[0].get("tags", {}),
-                }
-                print(json.dumps(primer_elemento, indent=2, ensure_ascii=False))
-            else:
-                print(
-                    "\n⚠️ ALERTA: La API respondió con éxito (200 OK), pero el arreglo 'elements' está vacío []."
-                )
-                print(
-                    "Esto significa que la sintaxis QL o la geografía fallaron desde la fuente, no en nuestro Backend."
-                )
-
-        else:
-            print(f"❌ La API rechazó la solicitud: {response.text}")
+            print(f"  {i}. [{tipo_osm.upper()}] {nombre}")
 
     except Exception as e:
-        print(f"🚨 Error crítico de conexión: {e}")
+        print(f"\n❌ ERROR: {e}")
 
 
 if __name__ == "__main__":
-    aislar_y_probar_overpass()
+    print("Iniciando Prueba Definitiva OSM (NW + Wikidata + 3km)...\n")
+
+    # Probamos CDMX - Cultura
+    probar_overpass_optimizado(
+        "CDMX (Zocalo)",
+        LUGARES_PRUEBA["CDMX (Zocalo)"]["lat"],
+        LUGARES_PRUEBA["CDMX (Zocalo)"]["lon"],
+        "cultura",
+    )
+    time.sleep(2)
+
+    # Probamos Paris - Cultura
+    probar_overpass_optimizado(
+        "Paris (Centro)",
+        LUGARES_PRUEBA["Paris (Centro)"]["lat"],
+        LUGARES_PRUEBA["Paris (Centro)"]["lon"],
+        "cultura",
+    )

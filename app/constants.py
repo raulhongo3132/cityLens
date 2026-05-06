@@ -20,17 +20,19 @@ PLACE_CATEGORIES = {
             '["tourism"="zoo"]',
             '["tourism"="aquarium"]',
             '["tourism"="viewpoint"]',
+            '["tourism"="information"]',
         ],
         "description": "Atracciones turísticas, parques temáticos y zoológicos",
     },
     "naturaleza": {
         "label": "Naturaleza",
         "osm_tags": [
-            '["boundary"="national_park"]',
-            '["leisure"="nature_reserve"]',
             '["natural"="waterfall"]',
             '["natural"="peak"]',
             '["natural"="volcano"]',
+            '["leisure"="nature_reserve"]',
+            '["boundary"="national_park"]',
+            '["tourism"="viewpoint"]',
         ],
         "description": "Parques nacionales, reservas ecológicas y maravillas naturales",
     },
@@ -42,6 +44,7 @@ PLACE_CATEGORIES = {
             '["amenity"="theatre"]',
             '["amenity"="arts_centre"]',
             '["historic"="archaeological_site"]',
+            '["historic"="monument"]',
         ],
         "description": "Museos, teatros, galerías y zonas arqueológicas",
     },
@@ -52,6 +55,7 @@ PLACE_CATEGORIES = {
             '["historic"="memorial"]',
             '["historic"="castle"]',
             '["historic"="ruins"]',
+            '["historic"="archaeological_site"]',
             '["building"="cathedral"]',
         ],
         "description": "Monumentos, castillos, catedrales y sitios conmemorativos",
@@ -60,3 +64,45 @@ PLACE_CATEGORIES = {
 
 BASE_CATEGORIES = list(PLACE_CATEGORIES.keys())
 ALL_CATEGORIES = list(PLACE_CATEGORIES.keys())
+
+# Nuevo diccionario para optimización de queries Overpass
+OSM_CATEGORIES = {
+    "destacados": [
+        '["tourism"="attraction"]',
+        '["historic"="monument"]',
+        '["tourism"="museum"]',
+        '["boundary"="national_park"]',
+    ],
+    "turismo": [
+        '["tourism"="attraction"]',
+        '["tourism"="theme_park"]',
+        '["tourism"="zoo"]',
+        '["tourism"="aquarium"]',
+        '["tourism"="viewpoint"]',
+        '["tourism"="information"]',
+    ],
+    "naturaleza": [
+        '["natural"="waterfall"]',
+        '["natural"="peak"]',
+        '["natural"="volcano"]',
+        '["leisure"="nature_reserve"]',
+        '["boundary"="national_park"]',
+        '["tourism"="viewpoint"]',
+    ],
+    "cultura": [
+        '["tourism"="museum"]',
+        '["tourism"="gallery"]',
+        '["amenity"="theatre"]',
+        '["amenity"="arts_centre"]',
+        '["historic"="archaeological_site"]',
+        '["historic"="monument"]',
+    ],
+    "historico": [
+        '["historic"="monument"]',
+        '["historic"="memorial"]',
+        '["historic"="castle"]',
+        '["historic"="ruins"]',
+        '["historic"="archaeological_site"]',
+        '["building"="cathedral"]',
+    ],
+}

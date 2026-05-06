@@ -58,11 +58,15 @@ def create_app():
 
     # 5. Blueprints
     from app.routes.cities import cities
-    from app.routes.main import main
     from app.routes.places import places
+    from app.routes.main import main
+    from app.routes.favorites import favorites
+    from app.routes.docs import docs
 
     app.register_blueprint(cities)
     app.register_blueprint(places)
+    app.register_blueprint(favorites)
+    app.register_blueprint(docs)
     app.register_blueprint(main)
 
     logger.info("✅ Blueprints registrados exitosamente")

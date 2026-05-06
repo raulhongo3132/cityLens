@@ -3,21 +3,40 @@ from . import db
 
 class City(db.Model):
     __tablename__ = "cities"
+
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
     country = db.Column(db.String(100), nullable=False)
     population = db.Column(db.Integer)
     timezone = db.Column(db.String(50))
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    # Relaciones
     places = db.relationship("Place", backref="city", lazy=True)
-    # Relación con favoritos para poder borrarlos en cascada si se borra la ciudad
-    favorites = db.relationship("Favorite", backref="city", lazy=True, cascade="all, delete-orphan")
-    
+
+    # Relación con favoritos (de karla)
+    favorites = db.relationship(
+        "Favorite",
+        backref="city",
+        lazy=True,
+        cascade="all, delete-orphan"
+    )
+
+    # Datos de país
     iso_code = db.Column(db.String(5), nullable=True)
     flag_url = db.Column(db.String(255), nullable=True)
     capital = db.Column(db.String(100), nullable=True)
+
+    # Coordenadas
     lat = db.Column(db.Float, nullable=True)
     lon = db.Column(db.Float, nullable=True)
+
+    # Bounding box (de upgrade)
+    bbox_south = db.Column(db.Float, nullable=True)
+    bbox_north = db.Column(db.Float, nullable=True)
+    bbox_west = db.Column(db.Float, nullable=True)
+    bbox_east = db.Column(db.Float, nullable=True)
+
     search_name = db.Column(db.String(100), nullable=True)
 
 class Place(db.Model):
@@ -38,7 +57,7 @@ class Place(db.Model):
     phone = db.Column(db.String(50), nullable=True)
 
     __table_args__ = (
-        db.UniqueConstraint('city_id', 'osm_place_id', name='uq_city_osm_place'),
+        db.UniqueConstraint("city_id", "osm_place_id", name="uq_city_osm_place"),
     )
 
 # 👇 NUEVA TABLA: El corazón de tu Propuesta de Valor Única (PVU)
