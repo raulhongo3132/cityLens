@@ -1,48 +1,45 @@
 version: '3.8'
 
 services:
-  # Servicio de Base de Datos
   db:
     image: postgres:15
     container_name: citylens_db
     restart: always
 
     environment:
-      POSTGRES_USER: user_admin
-      POSTGRES_PASSWORD: password_seguro
-      POSTGRES_DB: citylens_db
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
 
     ports:
-      - "5432:5432"
+      - "${POSTGRES_PORT}:${POSTGRES_PORT}"
 
     volumes:
-      # Volumen nombrado manejado por Docker
       - postgres_data:/var/lib/postgresql/data
 
-  # Servicio de tu aplicación Flask
   web:
     build: .
     container_name: citylens_app
     restart: always
 
     ports:
-      - "5000:5000"
+      - "${FLASK_PORT}:${FLASK_PORT}"
 
     environment:
-      # Conexión interna entre contenedores
-      DATABASE_URL: postgresql://user_admin:password_seguro@db:5432/citylens_db
-
-      FLASK_ENV: development
-      ORIGEN_PERMITIDO: http://localhost:5000
+      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:${POSTGRES_PORT}/${POSTGRES_DB}
+      FLASK_ENV: ${FLASK_ENV}
+      ORIGEN_PERMITIDO: ${ORIGEN_PERMITIDO}
 
     depends_on:
       - db
 
+    # Montaje de código solo en desarrollo
     volumes:
-      # Monta tu proyecto dentro del contenedor
-      # para reflejar cambios en tiempo real
-      - .:/app
+      - type: bind
+        source: .
+        target: /app
+        consistency: cached
+        # Solo se aplica si estamos en dev (override)
 
-# Declaración del volumen nombrado
 volumes:
   postgres_data:
