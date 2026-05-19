@@ -25,6 +25,9 @@ jobs:
       - name: Run migrations
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          ORIGEN_PERMITIDO: ${{ secrets.ORIGEN_PERMITIDO }}
+          FLASK_APP: run:create_app
+          FLASK_ENV: production
         run: |
-          export FLASK_APP=run.py
+          flask db current
           flask db upgrade
