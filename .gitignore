@@ -163,12 +163,9 @@ tree.txt
 project_analysis.md
 IMPLEMENTATION_REPORT.md
 
-# Migraciones específicas (pueden regenerarse)
-migrations/versions/
 
 # Configuración local
 .editorconfig
-migrations/
 postgres_data/
 
 # Archivos específicos del proyecto
@@ -177,4 +174,4 @@ FEATURES.md
 tree.txt
 project_analysis.md
 .editorconfig
-versions
+
