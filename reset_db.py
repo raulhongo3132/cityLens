@@ -5,9 +5,8 @@ from app import create_app, db
 app = create_app()
 
 with app.app_context():
-    db.drop_all()
-
-    db.session.execute(text("DROP TABLE IF EXISTS alembic_version"))
+    db.session.execute(text("DROP SCHEMA public CASCADE"))
+    db.session.execute(text("CREATE SCHEMA public"))
     db.session.commit()
 
-    print("Base de datos reiniciada completamente")
+    print("Schema public reiniciado completamente")
