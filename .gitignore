@@ -93,3 +93,5 @@ tree.txt
 project_analysis.md
 IMPLEMENTATION_REPORT.md
 FEATURES.md
+
+.env.dev
