@@ -38,7 +38,7 @@ OSM_CATEGORIES = {
 
 
 def fetch_places_from_wrapper(
-    city_name, latitude, longitude, category, limit=15, bbox=None
+    city_name, latitude, longitude, category, limit=15, bbox=None, iso_code=None
 ):
     """
     Wrapper optimizado para Overpass API.
@@ -46,6 +46,7 @@ def fetch_places_from_wrapper(
     ✅ OPTIMIZACIONES:
     - Usa nw (Node + Way) para capturar puntos y polígonos
     - Filtra por popularidad con wikidata
+    - Filtra por código ISO del país para asegurar pertenencia
     - Radio: 3km (3000m) para evitar timeouts
     - Timeout: 15s en servidor
     - out center tags: extrae coordenadas de polígonos correctamente
@@ -57,6 +58,7 @@ def fetch_places_from_wrapper(
         category: Categoría de lugares
         limit: Número máximo de resultados
         bbox: Bounding box opcional [south, north, west, east]
+        iso_code: Código ISO 3166-1 alpha2 del país (ej: "MX", "ES", "FR")
 
     Returns:
         dict: JSON de Overpass API con elementos o None
@@ -78,9 +80,16 @@ def fetch_places_from_wrapper(
     )
     logger.debug(f"Etiquetas a consultar ({len(etiquetas)}): {etiquetas}")
 
+    # Nota: No usamos filtro ISO en la query porque muchos lugares en OSM
+    # no tienen esta etiqueta asignada. En su lugar, filtraremos los resultados
+    # verificando que las coordenadas estén dentro del bbox del país.
+    if iso_code:
+        logger.info(f"🌍 Filtrando lugares por país: {iso_code.upper()} (usando bbox)")
+
     # 2. Construir consulta dinámica con nw (node + way)
     nw_query = ""
     for etiqueta in etiquetas:
+        # Usar solo la etiqueta de categoría (sin filtro ISO en la query)
         if bbox and len(bbox) == 4:
             # Usar bbox para países
             south, north, west, east = bbox

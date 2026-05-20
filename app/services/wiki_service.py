@@ -19,7 +19,7 @@ def fetch_wikipedia_summary(place_name):
     """
     url = f"https://es.wikipedia.org/api/rest_v1/page/summary/{place_name}"
 
-    # Header requerido por Wikimedia para evitar 403 Forbidden
+    # Header requerido por Wikimedia para evitar 403 Forbidden (Sección 19)
     headers = {"User-Agent": "Datamundi-CityLens/1.0 (estudiante@sistemas.edu)"}
 
     try:
@@ -63,10 +63,6 @@ def fetch_wikipedia_summary(place_name):
 
     except requests.exceptions.RequestException as e:
         logger.error(f"🚨 Error en request a Wikipedia: {e}")
-        return None
-
-    except ValueError as e:
-        logger.error(f"🚨 Error al parsear JSON de Wikipedia: {e}")
         return None
 
     except ValueError as e:

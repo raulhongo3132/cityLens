@@ -71,4 +71,20 @@ def create_app():
 
     logger.info("✅ Blueprints registrados exitosamente")
 
+    # 🗑️ RESET_ON_STARTUP: Limpia la base de datos al iniciar (útil para Render)
+    # Para activar: agregar variable de entorno RESET_ON_STARTUP=true en Render
+    if os.getenv("RESET_ON_STARTUP", "false").lower() == "true":
+        with app.app_context():
+            from app.models import City, Place
+
+            try:
+                # Eliminar en orden inverso a las foreign keys
+                Place.query.delete()
+                City.query.delete()
+                db.session.commit()
+                logger.info("🗑️ RESET_ON_STARTUP: Base de datos limpiada exitosamente")
+            except Exception as e:
+                db.session.rollback()
+                logger.error(f"🗑️ RESET_ON_STARTUP: Error al limpiar BD: {e}")
+
     return app

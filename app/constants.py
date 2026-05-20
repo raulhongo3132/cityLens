@@ -1,7 +1,14 @@
 # app/constants.py
 
 PLACE_CATEGORIES = {
-    # 👇 NUEVA CATEGORÍA POR DEFECTO
+    "gastronomico": {
+        "label": "Gastronómico",
+        "osm_tags": [
+            '["amenity"="restaurant"]',
+            '["amenity"="cafe"]',
+        ],
+        "description": "Restaurantes y cafés destacados",
+    },
     "destacados": {
         "label": "Destacados",
         "osm_tags": [
@@ -65,44 +72,34 @@ PLACE_CATEGORIES = {
 BASE_CATEGORIES = list(PLACE_CATEGORIES.keys())
 ALL_CATEGORIES = list(PLACE_CATEGORIES.keys())
 
-# Nuevo diccionario para optimización de queries Overpass
+# Nuevo diccionario para optimización de queries Overpass (Sección 18 IMPLEMENTATION_REPORT)
+# Filtros con ["wikidata"] para priorizar lugares populares y bien documentados
 OSM_CATEGORIES = {
+    "gastronomico": [
+        '["amenity"="restaurant"]["wikidata"]',
+        '["amenity"="cafe"]["wikidata"]',
+    ],
     "destacados": [
-        '["tourism"="attraction"]',
-        '["historic"="monument"]',
-        '["tourism"="museum"]',
-        '["boundary"="national_park"]',
+        '["tourism"="attraction"]["wikidata"]',
+        '["historic"="monument"]["wikidata"]',
+        '["historic"="building"]["wikidata"]',
     ],
     "turismo": [
-        '["tourism"="attraction"]',
-        '["tourism"="theme_park"]',
-        '["tourism"="zoo"]',
-        '["tourism"="aquarium"]',
-        '["tourism"="viewpoint"]',
-        '["tourism"="information"]',
+        '["tourism"="attraction"]["wikidata"]',
+        '["tourism"="viewpoint"]["wikidata"]',
+        '["tourism"="theme_park"]["wikidata"]',
     ],
     "naturaleza": [
-        '["natural"="waterfall"]',
-        '["natural"="peak"]',
-        '["natural"="volcano"]',
-        '["leisure"="nature_reserve"]',
-        '["boundary"="national_park"]',
-        '["tourism"="viewpoint"]',
+        '["leisure"="park"]["wikidata"]',
+        '["natural"="water"]["wikidata"]',
     ],
     "cultura": [
-        '["tourism"="museum"]',
-        '["tourism"="gallery"]',
-        '["amenity"="theatre"]',
-        '["amenity"="arts_centre"]',
-        '["historic"="archaeological_site"]',
-        '["historic"="monument"]',
+        '["tourism"="museum"]["wikidata"]',
+        '["tourism"="gallery"]["wikidata"]',
     ],
     "historico": [
-        '["historic"="monument"]',
-        '["historic"="memorial"]',
-        '["historic"="castle"]',
-        '["historic"="ruins"]',
-        '["historic"="archaeological_site"]',
-        '["building"="cathedral"]',
+        '["historic"="monument"]["wikidata"]',
+        '["historic"="castle"]["wikidata"]',
+        '["historic"="ruins"]["wikidata"]',
     ],
 }

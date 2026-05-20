@@ -73,10 +73,29 @@ def get_places(city_name, category):
                 "error": "No se encontraron coordenadas para la ciudad. Intenta de nuevo."
             }, 400
 
-        # Pasamos coordenadas exactas (requiere GET y no POST para Overpass)
+        # Lógica para decidir si usar bbox o around:
+        # - Para países: no usar bbox (demasiado grande, causa problemas)
+        # - Para ciudades específicas con bbox pequeño: sí usar bbox
         bbox = None
         if city.bbox_south:
-            bbox = [city.bbox_south, city.bbox_north, city.bbox_west, city.bbox_east]
+            # Verificar si el bbox es "pequeño" (< 1 grado = ~111km)
+            # Si es grande, es un país y no usamos bbox (usamos around:3000 desde capital)
+            bbox_south = city.bbox_south
+            bbox_north = city.bbox_north
+            bbox_west = city.bbox_west
+            bbox_east = city.bbox_east
+            
+            lat_range = abs(bbox_north - bbox_south) if bbox_north and bbox_south else 0
+            lon_range = abs(bbox_east - bbox_west) if bbox_east and bbox_west else 0
+            
+            # Si el bbox es muy grande (> 2 grados), es un país - NO usar bbox
+            if lat_range > 2 or lon_range > 2:
+                logger.info(f"📍 bbox grande detectado ({lat_range:.1f}x{lon_range:.1f}°), usando around:3000 desde capital")
+                bbox = None
+            else:
+                # bbox pequeño - es una ciudad específica
+                bbox = [bbox_south, bbox_north, bbox_west, bbox_east]
+                logger.info(f"📍 Usando bbox de ciudad: {bbox}")
 
         osm_data = fetch_places_from_wrapper(
             city_name=city.name,
@@ -85,6 +104,7 @@ def get_places(city_name, category):
             category=category,
             limit=15,
             bbox=bbox,
+            iso_code=city.iso_code,
         )
 
         if not osm_data or "elements" not in osm_data:

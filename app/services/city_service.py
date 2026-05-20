@@ -25,7 +25,7 @@ def get_city_coordinates(city_name, country_name=None):
 
     url = "https://nominatim.openstreetmap.org/search"
     params = {"format": "json", "q": query, "limit": 1, "addressdetails": 1}
-    headers = {"User-Agent": "CityLens/1.0"}
+    headers = {"User-Agent": "Datamundi-CityLens/1.0 (estudiante@sistemas.edu)"}
 
     try:
         response = requests.get(url, params=params, headers=headers, timeout=5)
@@ -133,10 +133,11 @@ def get_city_data(name):
         flag_url = country_data.get("flags", {}).get("svg", "")
 
 
-        # 1. Intento principal: geocoding (upgrade)
-        lat, lon, bbox = get_city_coordinates(country_name)
+        # 1. Prioridad: Geocodificar la CAPITAL del país (lugares populares cerca de la capital)
+        # Esto evita el problema de bbox grandes que incluyen países vecinos
+        lat, lon, bbox = get_city_coordinates(capital_name)
 
-        # 2. Fallback: capitalInfo (karla)
+        # 2. Fallback: capitalInfo de REST Countries
         if lat is None or lon is None:
             capital_info = country_data.get("capitalInfo", {})
             capital_latlng = capital_info.get("latlng", [])
@@ -144,13 +145,12 @@ def get_city_data(name):
             if len(capital_latlng) >= 2:
                 lat, lon = capital_latlng[0], capital_latlng[1]
                 bbox = None
+                logger.info(f"📍 Usando coordenadas de capital desde REST Countries: {capital_name}")
 
-        # 3. Fallback final: latlng general
+        # 3. Fallback final: Geocodificar el país (centroide)
         if lat is None or lon is None:
-            latlng = country_data.get("latlng", [None, None])
-            lat = latlng[0] if len(latlng) > 0 else None
-            lon = latlng[1] if len(latlng) > 1 else None
-            bbox = None
+            lat, lon, bbox = get_city_coordinates(country_name)
+            logger.info(f"📍 Usando coordenadas del país (centroide): {country_name}")
         # 2. Persistencia en la Base de Datos
         new_city = City(
             name=country_name,
