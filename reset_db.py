@@ -1,5 +1,4 @@
-from app import create_app
-from app.extensions import db
+from app import create_app, db
 
 app = create_app()
 
